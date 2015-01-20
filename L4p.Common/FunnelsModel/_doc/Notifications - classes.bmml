@@ -1,0 +1,111 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="577" measuredH="569" mockupW="445" mockupH="530">
+  <controls>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::RoundButton" x="165" y="106" w="105" h="54" measuredW="32" measuredH="32" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <shape>roundRect</shape>
+        <text>FunnelStore</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::RoundButton" x="277" y="351" w="119" h="36" measuredW="32" measuredH="32" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <shape>roundRect</shape>
+        <size>14</size>
+        <text>FunnelsAgent%0A%28wcf%20host%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::RoundButton" x="384" y="106" w="105" h="54" measuredW="32" measuredH="32" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <shape>roundRect</shape>
+        <text>FunnelStore</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::RoundButton" x="277" y="442" w="119" h="36" measuredW="32" measuredH="32" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <shape>roundRect</shape>
+        <size>14</size>
+        <text>FunnelsAgent%0A%28wcf%20proxy%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::RoundButton" x="277" y="515" w="119" h="54" measuredW="32" measuredH="32" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <shape>roundRect</shape>
+        <text>FunnelsShop</text>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::HRule" x="132" y="409" w="420" h="-1" measuredW="100" measuredH="10" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <stroke>dashed</stroke>
+      </controlProperties>
+    </control>
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::Arrow" x="567" y="193" w="10" h="264" measuredW="150" measuredH="100" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>13576743</color>
+        <curvature>0</curvature>
+        <direction>bottom</direction>
+        <leftArrow>false</leftArrow>
+        <stroke>solid</stroke>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="15" controlTypeID="__group__" x="160" y="39" w="114" h="46" measuredW="114" measuredH="46" zOrder="7" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::RoundButton" x="9" y="0" w="105" h="39" measuredW="32" measuredH="32" zOrder="0" locked="false" isInGroup="15">
+          <controlProperties>
+            <shape>roundRect</shape>
+            <text>Funnel</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::RoundButton" x="0" y="7" w="105" h="39" measuredW="32" measuredH="32" zOrder="1" locked="false" isInGroup="15">
+          <controlProperties>
+            <shape>roundRect</shape>
+            <text>Funnel</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="16" controlTypeID="__group__" x="379" y="39" w="114" h="46" measuredW="114" measuredH="46" zOrder="8" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::RoundButton" x="9" y="0" w="105" h="39" measuredW="32" measuredH="32" zOrder="0" locked="false" isInGroup="16">
+          <controlProperties>
+            <shape>roundRect</shape>
+            <text>Funnel</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::RoundButton" x="0" y="7" w="105" h="39" measuredW="32" measuredH="32" zOrder="1" locked="false" isInGroup="16">
+          <controlProperties>
+            <shape>roundRect</shape>
+            <text>Funnel</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="17" controlTypeID="com.balsamiq.mockups::RoundButton" x="256" y="262" w="161" h="54" measuredW="32" measuredH="32" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <shape>roundRect</shape>
+        <text>FunnelsAgent%0A%28FunnelsManager%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Arrow" x="277" y="184" w="29" h="63" measuredW="150" measuredH="100" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <curvature>0</curvature>
+        <leftArrow>true</leftArrow>
+        <rightArrow>false</rightArrow>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="19" controlTypeID="com.balsamiq.mockups::Arrow" x="364" y="184" w="29" h="63" measuredW="150" measuredH="100" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <curvature>0</curvature>
+        <direction>bottom</direction>
+        <leftArrow>false</leftArrow>
+        <rightArrow>true</rightArrow>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::Tooltip" x="396" y="214" w="-1" h="-1" measuredW="94" measuredH="33" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>StoreId</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

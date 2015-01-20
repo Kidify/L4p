@@ -1,0 +1,24 @@
+# xxx/ - means any folder or sub-folder
+# xxx/* - means any file in xxx foder but not in sub-folders
+
+#TFS files
+*.scc
+*.vssscc
+*.vspscc
+
+#Visual Studio
+*.suo
+*.ncb
+obj/
+bin/
+Debug/
+Release/
+
+# no *.user files, but yes to folders ending with *.user
+*.user
+!*.user/
+
+#others
+sh.exe.stackdump
+.idea/
+~$*

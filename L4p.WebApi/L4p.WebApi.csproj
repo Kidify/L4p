@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1CC1B679-FCCB-43C5-8B9A-F9869C5B84A1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>L4p.WebApi</RootNamespace>
+    <AssemblyName>L4p.WebApi</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\3Party\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\3Party\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnyRequest.cs" />
+    <Compile Include="AnyRequestExtensions.cs" />
+    <Compile Include="AsyncOperation.cs" />
+    <Compile Include="BlcBox.cs" />
+    <Compile Include="BlController.cs" />
+    <Compile Include="HttpArguments.cs" />
+    <Compile Include="MsgValidationHelpers.cs" />
+    <Compile Include="RequestConfig.cs" />
+    <Compile Include="WebApiExceptions.cs" />
+    <Compile Include="WebFactory.cs" />
+    <Compile Include="FluentApi\FluentExtentions.cs" />
+    <Compile Include="FluentApi\HttpServerSetup\IHttpServerSetup.cs" />
+    <Compile Include="FluentApi\HttpServerSetup\HttpServerSetter.cs" />
+    <Compile Include="HandleAllRequests.cs" />
+    <Compile Include="HttpHelpers.cs" />
+    <Compile Include="IBusinessLogicModule.cs" />
+    <Compile Include="IHttpServer.cs" />
+    <Compile Include="_nunit\HttpArgumentsTests.cs" />
+    <Compile Include="_nunit\HttpHelpersTests.cs" />
+    <Compile Include="_nunit\RouteRepositoryTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteRepository.cs" />
+    <Compile Include="SingleRoute.cs" />
+    <Compile Include="ThrottlingConfig.cs" />
+    <Compile Include="WebApiController.cs" />
+    <Compile Include="WebApiHelpers.cs" />
+    <Compile Include="IpList.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ASP.NET\IP2Country\IP2Country.csproj">
+      <Project>{63D9AF62-24A1-4E57-8CFA-84B8396F8BA4}</Project>
+      <Name>IP2Country</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\L4p.Common\L4p.Common.csproj">
+      <Project>{8427CF88-3940-4BA4-8129-CE9390455884}</Project>
+      <Name>L4p.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

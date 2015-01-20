@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8427CF88-3940-4BA4-8129-CE9390455884}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>L4p.Common</RootNamespace>
+    <AssemblyName>L4p.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EPPlus">
+      <HintPath>..\3Party\EPPlus\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\3Party\Moq\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\3Party\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\3Party\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActionMsgs\ActionMsg.cs" />
+    <Compile Include="ActionMsgs\ActionMsgException.cs" />
+    <Compile Include="ActionMsgs\ActionMsgR.cs" />
+    <Compile Include="ActionMsgs\nunit\When_action_msg_is_joined.cs" />
+    <Compile Include="ActionMsgs\nunit\When_action_msg_with_result_is_joined.cs" />
+    <Compile Include="ActionQueues\ActionQueue.cs" />
+    <Compile Include="ActionQueues\ActionQueueHelpers.cs" />
+    <Compile Include="ActionQueues\nunit\When_action_is_popped.cs" />
+    <Compile Include="ActionQueues\nunit\When_action_is_pushed.cs" />
+    <Compile Include="ActionQueues\nunit\When_queue_is_cleared.cs" />
+    <Compile Include="ActionQueues\nunit\When_queue_is_executed.cs" />
+    <Compile Include="ActiveObjects\ActiveObject.cs" />
+    <Compile Include="ActiveObjects\ActiveObjectException.cs" />
+    <Compile Include="ActiveObjects\AoCounters.cs" />
+    <Compile Include="ActiveObjects\nunit\ActiveTest.cs" />
+    <Compile Include="ActiveObjects\nunit\When_action_is_dispatched.cs" />
+    <Compile Include="ActiveObjects\nunit\When_action_is_joined.cs" />
+    <Compile Include="ActiveObjects\nunit\When_action_is_performed.cs" />
+    <Compile Include="ActiveObjects\nunit\When_action_is_pushed.cs" />
+    <Compile Include="Agers\Ager.cs" />
+    <Compile Include="Agers\_nunit\AgerTests.cs" />
+    <Compile Include="BadInputException.cs" />
+    <Compile Include="DumpToLogs\DumpManager.cs" />
+    <Compile Include="DumpToLogs\IAmAComponent.cs" />
+    <Compile Include="DumpToLogs\IHaveDump.cs" />
+    <Compile Include="DumpToLogs\_nunit\DumpManagerTests.cs" />
+    <Compile Include="DumpToLogs\DumpRepo.cs" />
+    <Compile Include="DumpToLogs\DumpToLogMsg.cs" />
+    <Compile Include="ExcelFiles\CellConverter.cs" />
+    <Compile Include="ExcelFiles\ExcelFileConfig.cs" />
+    <Compile Include="ExcelFiles\ExcelFileException.cs" />
+    <Compile Include="ExcelFiles\ExcelFile.cs" />
+    <Compile Include="ExcelFiles\ReflectedType.cs" />
+    <Compile Include="ExcelFiles\SheetHelpers.cs" />
+    <Compile Include="ExcelFiles\_nunit\ExcelFileTests.cs" />
+    <Compile Include="ExcelFiles\SheetReader.cs" />
+    <Compile Include="ExcelFiles\SingleSheet.cs" />
+    <Compile Include="ExcelFiles\_nunit\SubstitutionTests.cs" />
+    <Compile Include="FunnelsModel\NotInitializedFunnels.cs" />
+    <Compile Include="Loggers\StdLog.cs" />
+    <Compile Include="PubSub\client\NotInitializedSignals.cs" />
+    <Compile Include="PubSub\SignalsComponent.cs" />
+    <Compile Include="ShouldNotGetHereException.cs" />
+    <Compile Include="SystemEvents\IShouldRunOnSystemStart.cs" />
+    <Compile Include="SystemEvents\MyModules.cs" />
+    <Compile Include="Wipers\NullWiper.cs" />
+    <Compile Include="Wipers\_nunit\When_wiper_is_used.cs" />
+    <Compile Include="Wipers\Wiper.cs" />
+    <Compile Include="GcCaches\DeathNotifier.cs" />
+    <Compile Include="GcCaches\ItemsRepo.cs" />
+    <Compile Include="Json\_nunit\Json_with_adge_cases.cs" />
+    <Compile Include="PubSub\client\Io\AgentConnector.cs" />
+    <Compile Include="PubSub\client\Io\AgentWriter.cs" />
+    <Compile Include="PubSub\client\Io\Ioop.cs" />
+    <Compile Include="PubSub\client\JsonEngine.cs" />
+    <Compile Include="PubSub\client\LocalFactory.cs" />
+    <Compile Include="PubSub\client\Io\AgentsRepo.cs" />
+    <Compile Include="PubSub\client\SignalsSlot.cs" />
+    <Compile Include="PubSub\client\TopicsRepo.cs" />
+    <Compile Include="PubSub\comm\MsgExtensions.cs" />
+    <Compile Include="PubSub\contexts\SessionContextRepo.cs" />
+    <Compile Include="PubSub\hub\AgentsEngine.cs" />
+    <Compile Include="Idlers\Idler.cs" />
+    <Compile Include="PubSub\contexts\SessionContext.cs" />
+    <Compile Include="PubSub\utils\FiltersEngine.cs" />
+    <Compile Include="PubSub\utils\_nunit\LambdaFactoryTests.cs" />
+    <Compile Include="PubSub\_nunit\Signals_integration_tests.cs" />
+    <Compile Include="PubSub\_nunit\When_agent_is_dead.cs" />
+    <Compile Include="SystemEvents\MySystemEvents.cs" />
+    <Compile Include="GcCaches\_nunit\TtlCacheTests.cs" />
+    <Compile Include="GcCaches\TtlItem.cs" />
+    <Compile Include="Concerns\ConcernsException.cs" />
+    <Compile Include="Concerns\ErrorHandlerOf.cs" />
+    <Compile Include="Concerns\IMyConcernsAreConfigurable.cs" />
+    <Compile Include="Concerns\ManyReadersSingleWriter.cs" />
+    <Compile Include="Concerns\SynchronizedCallsOf.cs" />
+    <Compile Include="Concerns\nunit\ErrorHandlerOf_tests.cs" />
+    <Compile Include="Concerns\nunit\SynchronizedCallsOf_tests.cs" />
+    <Compile Include="ConfigurationFiles\ConfigRa.cs" />
+    <Compile Include="ConfigurationFiles\Json2Config.cs" />
+    <Compile Include="CountersAccumulators\CountersAccumulator.cs" />
+    <Compile Include="CountersAccumulators\CountersHelpers.cs" />
+    <Compile Include="CountersAccumulators\nunit\SomeCounters.cs" />
+    <Compile Include="CountersAccumulators\nunit\When_counters_are_accumulated.cs" />
+    <Compile Include="CountersAccumulators\nunit\When_counters_are_formatted.cs" />
+    <Compile Include="Extensions\ActionExtensions.cs" />
+    <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Extensions\FuncExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Extensions\_nunit\When_string_is_substituted.cs" />
+    <Compile Include="Loggers\ThrottledLog.cs" />
+    <Compile Include="Loggers\_nunit\ThrottledLogTests.cs" />
+    <Compile Include="Plugins\PluginOf.cs" />
+    <Compile Include="PubSub\client\MessangerEngine.cs" />
+    <Compile Include="PubSub\client\HelloPulseBeat.cs" />
+    <Compile Include="PubSub\client\RemoteRepo.cs" />
+    <Compile Include="PubSub\client\_nunit\PulseBeatTests.cs" />
+    <Compile Include="PubSub\client\SignalsAgent.cs" />
+    <Compile Include="PubSub\client\wcf\SignalsHub.cs" />
+    <Compile Include="PubSub\comm\ISignalsAgent.cs" />
+    <Compile Include="PubSub\comm\ISignalsHub.cs" />
+    <Compile Include="Helpers\nunit\TrackingIdTests.cs" />
+    <Compile Include="Helpers\TrackingId.cs" />
+    <Compile Include="Plugins\IPluginVersion.cs" />
+    <Compile Include="Plugins\nunit\PlutinLoaderTests.cs" />
+    <Compile Include="Plugins\PluginRepo.cs" />
+    <Compile Include="Plugins\InstanceBox.cs" />
+    <Compile Include="Plugins\PluginLoader.cs" />
+    <Compile Include="Plugins\PluginException.cs" />
+    <Compile Include="Enum.cs" />
+    <Compile Include="Extensions\GuidExtensions.cs" />
+    <Compile Include="FunnelsModel\client\FunnelsAgent.cs" />
+    <Compile Include="FunnelsModel\comm\StoreInfo.cs" />
+    <Compile Include="FunnelsModel\io\IoConnector.cs" />
+    <Compile Include="FunnelsModel\io\Ioop.cs" />
+    <Compile Include="FunnelsModel\io\IoQueue.cs" />
+    <Compile Include="FunnelsModel\config\FmConfigRa.cs" />
+    <Compile Include="FunnelsModel\FmFactoryEngine.cs" />
+    <Compile Include="FunnelsModel\hub\wcf\FunnelsResolver.cs" />
+    <Compile Include="FunnelsModel\hub\wcf\FunnelsShop.cs" />
+    <Compile Include="FunnelsModel\io\IoOperation.cs" />
+    <Compile Include="FunnelsModel\io\IoReader.cs" />
+    <Compile Include="FunnelsModel\io\IoThreads.cs" />
+    <Compile Include="FunnelsModel\config\FunnelsConfig.cs" />
+    <Compile Include="FunnelsModel\io\IoSink.cs" />
+    <Compile Include="FunnelsModel\hub\wcf\FunnelsAgent.cs" />
+    <Compile Include="FunnelsModel\IFunnelTimeline.cs" />
+    <Compile Include="FunnelsModel\client\_nunit\FunnelsRepoTests.cs" />
+    <Compile Include="FunnelsModel\client\wcf\FunnelsResolver.cs" />
+    <Compile Include="FunnelsModel\client\wcf\FunnelsShop.cs" />
+    <Compile Include="FunnelsModel\client\wcf\FunnelsAgent.cs" />
+    <Compile Include="FunnelsModel\FunnelHelpers.cs" />
+    <Compile Include="FunnelsModel\comm\AgentInfo.cs" />
+    <Compile Include="FunnelsModel\comm\CounterHit.cs" />
+    <Compile Include="FunnelsModel\comm\HubCounters.cs" />
+    <Compile Include="FunnelsModel\comm\IFunnelsAgent.cs" />
+    <Compile Include="FunnelsModel\comm\IFunnelsResolver.cs" />
+    <Compile Include="FunnelsModel\comm\LogMsg.cs" />
+    <Compile Include="FunnelsModel\comm\Post.cs" />
+    <Compile Include="FunnelsModel\comm\ShopInfo.cs" />
+    <Compile Include="FunnelsModel\FunnelsManager-Factories.cs" />
+    <Compile Include="FunnelsModel\hub\FunnelsAgent.cs" />
+    <Compile Include="FunnelsModel\hub\FunnelsShop.cs" />
+    <Compile Include="FunnelsModel\hub\HubCache.cs" />
+    <Compile Include="FunnelsModel\hub\FunnelsResolver.cs" />
+    <Compile Include="FunnelsModel\hub\HubRepo.cs" />
+    <Compile Include="FunnelsModel\hub\WcfHelpers.cs" />
+    <Compile Include="FunnelsModel\client\FunnelsShop.cs" />
+    <Compile Include="FunnelsModel\client\FunnelStoreErrorHandler.cs" />
+    <Compile Include="FunnelsModel\io\IoWriter.cs" />
+    <Compile Include="FunnelsModel\_nunit\Client_server_intergration_tests.cs" />
+    <Compile Include="FunnelsModel\_nunit\Funnels_with_logs.cs" />
+    <Compile Include="FunnelsModel\_nunit\SomeStruct.cs" />
+    <Compile Include="Loggers\NullLogFile.cs" />
+    <Compile Include="NUnits\UnderUnitTestDetector.cs" />
+    <Compile Include="PubSub\client\Null.cs" />
+    <Compile Include="PubSub\client\LocalDispatcher.cs" />
+    <Compile Include="PubSub\client\RemoteDispatcher.cs" />
+    <Compile Include="PubSub\client\LocalRepo.cs" />
+    <Compile Include="PubSub\hub\HubRepo.cs" />
+    <Compile Include="PubSub\hub\MessangerEngine.cs" />
+    <Compile Include="PubSub\client\wcf\SignalsAgent.cs" />
+    <Compile Include="PubSub\hub\wcf\SignalsAgent.cs" />
+    <Compile Include="PubSub\hub\wcf\SignalsHub.cs" />
+    <Compile Include="PubSub\Signals.cs" />
+    <Compile Include="PubSub\SignalsConfig.cs" />
+    <Compile Include="PubSub\client\SignalsConfigRa.cs" />
+    <Compile Include="PubSub\hub\SignalsHub.cs" />
+    <Compile Include="PubSub\client\SignalsManagerEx.cs" />
+    <Compile Include="PubSub\client\SignalSlot.cs" />
+    <Compile Include="PubSub\_nunit\Signlas_should_just_work.cs" />
+    <Compile Include="Schedulers\EventScheduler.cs" />
+    <Compile Include="FunnelsModel\IJsonPort.cs" />
+    <Compile Include="FunnelsModel\client\FunnelCache.cs" />
+    <Compile Include="FunnelsModel\client\FunnelsRepo.cs" />
+    <Compile Include="GcCaches\GcCache.cs" />
+    <Compile Include="Schedulers\EventInfo.cs" />
+    <Compile Include="Schedulers\_nunit\EventSchedulerTests.cs" />
+    <Compile Include="Schedulers\IEventSlot.cs" />
+    <Compile Include="Schedulers\SchedulerRepo.cs" />
+    <Compile Include="ConfigurationFiles\ConfigFileException.cs" />
+    <Compile Include="ConfigurationFiles\ConfigFile.cs" />
+    <Compile Include="ConfigurationFiles\_nunit\ConfigFileTests.cs" />
+    <Compile Include="ConfigurationFiles\TimeSpanFromJsonConverter.cs" />
+    <Compile Include="Loggers\LogFile.cs" />
+    <Compile Include="PubSub\SignalsException.cs" />
+    <Compile Include="TraceLogger.cs" />
+    <Compile Include="Wcf\NetTcpSharing.cs" />
+    <Compile Include="Wcf\ServiceControllerExtensions.cs" />
+    <Compile Include="Wcf\WcfAsyncHost.cs" />
+    <Compile Include="Wcf\WcfTcp.cs" />
+    <Compile Include="NUnits\EnumTests.cs" />
+    <Compile Include="Extensions\StringBuilderExtensions.cs" />
+    <Compile Include="Extensions\_nunit\When_exception_is_formatted.cs" />
+    <Compile Include="Extensions\_nunit\When_exception_is_wrapped.cs" />
+    <Compile Include="FunnelsModel\FunnelsException.cs" />
+    <Compile Include="FunnelsModel\comm\IFunnelsShop.cs" />
+    <Compile Include="FunnelsModel\Funnel.cs" />
+    <Compile Include="FunnelsModel\Funnel-Factories.cs" />
+    <Compile Include="FunnelsModel\Funnels.cs" />
+    <Compile Include="FunnelsModel\FunnelsManager.cs" />
+    <Compile Include="FunnelsModel\IFunnelCounters.cs" />
+    <Compile Include="FunnelsModel\IFunnelLogger.cs" />
+    <Compile Include="FunnelsModel\IFunnelTags.cs" />
+    <Compile Include="FunnelsModel\client\FunnelStore.cs" />
+    <Compile Include="FunnelsModel\client\Null.cs" />
+    <Compile Include="FunnelsModel\_nunit\When_Funnel_is_used.cs" />
+    <Compile Include="Helpers\IfHelpers.cs" />
+    <Compile Include="Extensions\LinkedListExtensions.cs" />
+    <Compile Include="Helpers\Md5Helpers.cs" />
+    <Compile Include="Helpers\nunit\Md5HelpersTests.cs" />
+    <Compile Include="Extensions\TimeSpanExtensions.cs" />
+    <Compile Include="Concerns\nunit\SomeSplitter.cs" />
+    <Compile Include="Concerns\nunit\When_splitting_to_many.cs" />
+    <Compile Include="Concerns\SplitToOne.cs" />
+    <Compile Include="Concerns\SplitToMany.cs" />
+    <Compile Include="Concerns\nunit\When_splitting_to_one.cs" />
+    <Compile Include="Helpers\nunit\When_try_catch_rethrow.cs" />
+    <Compile Include="FunnelsModel\IFunnel.cs" />
+    <Compile Include="IShouldBeStarted.cs" />
+    <Compile Include="Extensions\ConvertExtensions.cs" />
+    <Compile Include="Extensions\ExceptionExtensions.cs" />
+    <Compile Include="IoCs\IIoC.cs" />
+    <Compile Include="IoCs\FluentApi.cs" />
+    <Compile Include="IoCs\IoC.cs" />
+    <Compile Include="IoCs\IoC-New.cs" />
+    <Compile Include="IoCs\IocResolverException.cs" />
+    <Compile Include="IoCs\nunit\FluentApiUsage.cs" />
+    <Compile Include="IoCs\nunit\When_instance_is_resolved.cs" />
+    <Compile Include="IoCs\nunit\When_resolving_is_deffered.cs" />
+    <Compile Include="Json\JsonHelpers.cs" />
+    <Compile Include="Wcf\WcfProxy.cs" />
+    <Compile Include="Wcf\WcfHost.cs" />
+    <Compile Include="Wcf\TcpStreamBindng.cs" />
+    <Compile Include="ShouldNotBeCalledException.cs" />
+    <Compile Include="Tcp\LineReader.cs" />
+    <Compile Include="L4pException.cs" />
+    <Compile Include="NUnits\AssertIt.cs" />
+    <Compile Include="IoCs\nunit\When_factory_is_registered.cs" />
+    <Compile Include="IoCs\nunit\When_instance_is_registered.cs" />
+    <Compile Include="IoCs\nunit\When_mocks_are_registered.cs" />
+    <Compile Include="IoCs\nunit\When_nothing_is_registered.cs" />
+    <Compile Include="IoCs\SyncedIoC.cs" />
+    <Compile Include="IoCs\nunit\IoC_usage_guide.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="ForeverThreads\ForeverThread.cs" />
+    <Compile Include="ForeverThreads\ForeverThreadConfig.cs" />
+    <Compile Include="ForeverThreads\ForeverThreadException.cs" />
+    <Compile Include="ForeverThreads\nunit\When_thread_is_started.cs" />
+    <Compile Include="ForeverThreads\nunit\When_thread_is_stopped.cs" />
+    <Compile Include="Tcp\LineStreamReader.cs" />
+    <Compile Include="Tcp\TcpException.cs" />
+    <Compile Include="Tcp\nunit\When_line_stream_reader_is_created.cs" />
+    <Compile Include="Tcp\TcpAcceptor.cs" />
+    <Compile Include="Tcp\TcpHelpers.cs" />
+    <Compile Include="Tcp\nunit\When_uri_is_parsed.cs" />
+    <Compile Include="Helpers\TryHelpers.cs" />
+    <Compile Include="Helpers\ValidateHelpers.cs" />
+    <Compile Include="Timelines\ActionItem.cs" />
+    <Compile Include="Timelines\FluentApi\TimelineBuilder.cs" />
+    <Compile Include="Timelines\_nunit\When_fluent_api_is_used.cs" />
+    <Compile Include="Timelines\Timeline.cs" />
+    <Compile Include="Timelines\TimelineHelpers.cs" />
+    <Compile Include="Timelines\_nunit\When_action_is_added.cs" />
+    <Compile Include="NUnits\NUnitHelpers.cs" />
+    <Compile Include="PubSub\utils\_nunit\HandlerInfoGames.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ConfigurationFiles\_nunit\multiple_configurations_aaa.js" />
+    <Content Include="ConfigurationFiles\_nunit\multiple_configurations_bbb.js" />
+    <Content Include="ConfigurationFiles\_nunit\multiple_configurations_CCC.js" />
+    <Content Include="ConfigurationFiles\_nunit\single_configuration.js" />
+    <None Include="FunnelsModel\_doc\Design Decisions.md" />
+    <None Include="FunnelsModel\_doc\todo.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="_nunit\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
