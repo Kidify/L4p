@@ -22,7 +22,7 @@ namespace L4p.Common.Schedulers
         void ResumeEvent(IEventSlot slot);
     }
 
-    class EventScheduler : IEventScheduler
+    public class EventScheduler : IEventScheduler
     {
         #region members
 
@@ -124,7 +124,7 @@ namespace L4p.Common.Schedulers
 
         void IEventScheduler.Start()
         {
-            _thr.Start();
+            _thr.Start(this.GetType().Name);
         }
 
         void IEventScheduler.Stop()

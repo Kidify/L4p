@@ -1,9 +1,9 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace L4p.Common.GcCaches
+namespace L4p.Common.GcAwareTtlCaches
 {
-    public interface IGcCache<TFacet, TInstance>
+    public interface ITtlCache<TFacet, TInstance>
         where TFacet : class
         where TInstance : class
     {
@@ -11,7 +11,7 @@ namespace L4p.Common.GcCaches
         TInstance[] GetDeadInstances(TimeSpan ttl);
     }
 
-    public class GcCache<TFacet, TInstance> : IGcCache<TFacet, TInstance>
+    public class TtlCache<TFacet, TInstance> : ITtlCache<TFacet, TInstance>
         where TFacet : class
         where TInstance : class
     {
@@ -24,13 +24,13 @@ namespace L4p.Common.GcCaches
 
         #region construction
 
-        public static IGcCache<TFacet, TInstance> New()
+        public static ITtlCache<TFacet, TInstance> New()
         {
             return
-                new GcCache<TFacet, TInstance>();
+                new TtlCache<TFacet, TInstance>();
         }
 
-        private GcCache()
+        private TtlCache()
         {
             _deathAgent = new ConditionalWeakTable<TFacet, DeathNotifier>();
             _repo = ItemsRepo<TInstance>.New();
@@ -43,7 +43,7 @@ namespace L4p.Common.GcCaches
 
         #region ITtlCache
 
-        void IGcCache<TFacet, TInstance>.AddInstance(TFacet facet, TInstance instance)
+        void ITtlCache<TFacet, TInstance>.AddInstance(TFacet facet, TInstance instance)
         {
             var item = _repo.GetBy(instance);
 
@@ -68,7 +68,7 @@ namespace L4p.Common.GcCaches
             }
         }
 
-        TInstance[] IGcCache<TFacet, TInstance>.GetDeadInstances(TimeSpan ttl)
+        TInstance[] ITtlCache<TFacet, TInstance>.GetDeadInstances(TimeSpan ttl)
         {
             var items = _repo.GetDeadItems(ttl);
 

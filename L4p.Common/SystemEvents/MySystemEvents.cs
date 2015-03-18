@@ -11,7 +11,7 @@ namespace L4p.Common.SystemEvents
 {
     public interface IMySystemEvents
     {
-        void SystemIsBeingStarted(params Assembly[] entryAssemblies);
+        void SystemIsBeingStarted(string moduleKey, params Assembly[] entryAssemblies);
         void SystemIsBeingStopped();
         void SetConsoleCtrlHandler();
 
@@ -112,7 +112,7 @@ namespace L4p.Common.SystemEvents
             raise_event(_onSystemExit, "on exit");
         }
 
-        private void initialize_modules(Assembly[] entryAssemblies)
+        private void initialize_modules(string moduleKey, Assembly[] entryAssemblies)
         {
             var modules = MyModules.New(_log);
 
@@ -129,7 +129,7 @@ namespace L4p.Common.SystemEvents
 
             _log.Trace("Initializers order: {0}", forLog.ToArray().ToJson());
 
-            var count = modules.CallInitializers(initialzers);
+            var count = modules.CallInitializers(moduleKey, initialzers);
 
             _log.Trace("Initializers: types: {0} instances: {1} initialized: {2}", 
                 types.Length, initialzers.Length, count);
@@ -139,7 +139,7 @@ namespace L4p.Common.SystemEvents
 
         #region interface
 
-        void IMySystemEvents.SystemIsBeingStarted(Assembly[] entryAssemblies)
+        void IMySystemEvents.SystemIsBeingStarted(string moduleKey, Assembly[] entryAssemblies)
         {
             if (entryAssemblies.IsEmpty())
                 entryAssemblies = new[] { Assembly.GetEntryAssembly() };
@@ -153,7 +153,7 @@ namespace L4p.Common.SystemEvents
 
             try
             {
-                initialize_modules(entryAssemblies);
+                initialize_modules(moduleKey, entryAssemblies);
                 _log.Info("SystemEvents: modules are initialized");
             }
             catch (Exception ex)

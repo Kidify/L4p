@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace L4p.Common.GcCaches
+namespace L4p.Common.GcAwareTtlCaches
 {
     interface ITtlItem<TInstance>
         where TInstance : class

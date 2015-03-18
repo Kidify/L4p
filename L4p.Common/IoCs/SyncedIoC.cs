@@ -10,9 +10,9 @@ namespace L4p.Common.IoCs
         public static IIoC New(IIoC impl) { return new SyncedIoC(impl); }
         private SyncedIoC(IIoC impl) { _impl = impl; }
 
-        IIoC IIoC.RegisterInstance<T>(object impl) { lock(_mutex) return _impl.RegisterInstance<T>(impl); }
-        IIoC IIoC.RegisterFactory<T>(Func<object> factory) { lock(_mutex) return _impl.RegisterFactory<T>(factory); }
-        IIoC IIoC.RegisterLazy<T>(Func<T> lazy) { lock(_mutex) return _impl.RegisterLazy(lazy); }
+        IIoC IIoC.RegisterInstance<T>(object impl) { lock(_mutex) _impl.RegisterInstance<T>(impl); return this; }
+        IIoC IIoC.RegisterFactory<T>(Func<object> factory) { lock(_mutex) _impl.RegisterFactory<T>(factory); return this; }
+        IIoC IIoC.RegisterLazy<T>(Func<T> lazy) { lock(_mutex) _impl.RegisterLazy(lazy); return this; }
         T IIoC.Resolve<T>() { lock (_mutex) return _impl.Resolve<T>(); }
         T IIoC.Resolve<T>(Func<T> factory) { lock(_mutex) return _impl.Resolve(factory); }
         T IIoC.Resolve<T>(Func<IIoC, T> factory) { lock (_mutex) return _impl.Resolve(factory); }

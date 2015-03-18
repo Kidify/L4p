@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using L4p.Common.Extensions;
 using L4p.Common.ForeverThreads;
 using L4p.Common.FunnelsModel.config;
 using L4p.Common.IoCs;
@@ -101,9 +102,12 @@ namespace L4p.Common.FunnelsModel.io
 
         void IIoThreads.Start()
         {
+            var thrNo = 0;
+
             foreach (var thr in _pool)
             {
-                thr.Start();
+                var name = "IoThreads.{0}".Fmt(thrNo++);
+                thr.Start(name);
             }
         }
 

@@ -87,6 +87,12 @@ namespace L4p.WebApi
                 Log.Error("Request with unexpected error code ({2}: {3}) trackingId='{0}' {1}", 
                     trackingId, inArgs.ToJson(), outArgs.ErrorCode, outArgs.ErrorMessage);
 
+                var feInputFailure =
+                    outArgs.ErrorCode.StartsWith("RC_") && outArgs.ErrorCode != "RC_EXCEPTION";
+
+                if (feInputFailure)
+                    return;
+
                 if (outArgs.ErrorCode != "UxError")
                     outArgs.ErrorMessage = _oops.Fmt(trackingId);
             }
@@ -112,7 +118,7 @@ namespace L4p.WebApi
                 ErrorMessage = errorMsg
             };
 
-            http.set_json_response(outArgs);
+            http.set_jsonp_response(outArgs);
         }
 
         void IBlController.RegisterRoutes(IHttpServer server)

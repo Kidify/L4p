@@ -7,7 +7,7 @@ namespace L4p.Common.ForeverThreads
 {
     public interface IForeverThread
     {
-        void Start();
+        void Start(string name = null);
         void Stop();
         void PostStopRequest();
         bool StopRequestIsPosted();
@@ -54,7 +54,7 @@ namespace L4p.Common.ForeverThreads
 
             _config = new ForeverThreadConfig
                 {
-                    Name = config.Name ?? "ForEverThread.{0}".Fmt(count),
+                    Name = config.Name ?? "ForeverThread.{0}".Fmt(count),
                     StartTimeout = config.StartTimeout,
                     StopTimeout = config.StopTimeout
                 };
@@ -89,8 +89,11 @@ namespace L4p.Common.ForeverThreads
 
         #region interface
 
-        void IForeverThread.Start()
+        void IForeverThread.Start(string name)
         {
+            if (name.IsNotEmpty())
+                _config.Name = name;
+
             _thr.Start();
             bool isStarted = _isStartedEvent.WaitOne(_config.StartTimeout);
 

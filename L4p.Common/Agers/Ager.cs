@@ -8,6 +8,7 @@ namespace L4p.Common.Agers
     {
         void Add(T item);
         T GetExpiredItem(DateTime now, TimeSpan expirationSpan);
+        void Clear();
     }
 
     public class Ager<T> : IAger<T>
@@ -72,6 +73,11 @@ namespace L4p.Common.Agers
 
             return item;
         }
+
+        void IAger<T>.Clear()
+        {
+            _que.Clear();
+        }
     }
 
     public class SyncAger<T> : IAger<T>
@@ -85,6 +91,7 @@ namespace L4p.Common.Agers
 
         void IAger<T>.Add(T item) { lock(_mutex) _impl.Add(item); }
         T IAger<T>.GetExpiredItem(DateTime now, TimeSpan expirationSpan) { lock(_mutex) return _impl.GetExpiredItem(now, expirationSpan); }
+        void IAger<T>.Clear() { lock (_mutex) _impl.Clear(); }
     }
 
 }

@@ -9,13 +9,13 @@ namespace L4p.Common.ActiveObjects
 {
     public interface IActivePeer
     {
-        void Start();
+        void Start(string thrName = null);
         void Stop();
     }
 
     public interface IActiveObject : IShouldBeStarted
     {
-        void Start();
+        void Start(string thrName = null);
         void Stop();
         int PushAction(Action action);
         AoCounters GetCounters { get; }
@@ -126,14 +126,19 @@ namespace L4p.Common.ActiveObjects
                 throw new ActiveObjectException("Active object method is called on its own thread");
         }
 
-        protected virtual void Start()
+        protected virtual void Start(string thrName)
         {
-            _thr.Start();
+            _thr.Start(thrName ?? _targetClass);
         }
 
         protected virtual void Stop()
         {
             _thr.Stop();
+        }
+
+        protected int InQueue
+        {
+            get { return _que.Count; }
         }
 
         protected virtual void Idle()
@@ -181,9 +186,9 @@ namespace L4p.Common.ActiveObjects
 
         #region interface
 
-        void IActivePeer.Start()
+        void IActivePeer.Start(string thrName)
         {
-            Start();
+            Start(thrName);
         }
 
         void IActivePeer.Stop()
@@ -191,9 +196,9 @@ namespace L4p.Common.ActiveObjects
             Stop();
         }
 
-        void IActiveObject.Start()
+        void IActiveObject.Start(string thrName)
         {
-            Start();
+            Start(thrName);
         }
 
         void IActiveObject.Stop()

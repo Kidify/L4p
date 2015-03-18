@@ -43,7 +43,7 @@ namespace L4p.WebApi
 
         public static void set_cors(this HttpContext http, string origin)
         {
-            http.Response.AppendHeader("Access-Control-Allow-Origin", origin);
+            http.Response.Headers.Set("Access-Control-Allow-Origin", origin);
         }
 
         public static void set_text_response(this HttpContext http, string text)
@@ -84,13 +84,24 @@ namespace L4p.WebApi
             http.Response.Write(json);
         }
 
-        public static void set_jsonp_response(this HttpContext http, string text)
+        public static void set_jsonp_response<T>(this HttpContext http, T data, IHttpArguments args = null)
         {
+            if (args == null)
+                args = HttpArguments.New(http);
+
+            var callback = args["callback"].As<string>("");
+
+            if (callback.IsEmpty())
+            {
+                http.set_json_response(data);
+                return;
+            }
+
+            string json = JsonConvert.SerializeObject(data, _enumConverter, _dateTimeConverter);
+            string text = "{0}({1})".Fmt(callback, json);
+
             http.Response.ContentType = "text/javascript";
-
-            throw new NotImplementedException("callback is not parsed yet");
-
-//            http.Response.Write(text);
+            http.Response.Write(text);
         }
 
         public static void set_error_response(this HttpContext http, int statusCode, string text)
@@ -219,10 +230,10 @@ namespace L4p.WebApi
             return domain;
         }
 
-        public static void set_cookie_for_root_domain(this HttpContext http, HttpCookie cookie)
+        public static string get_base_domain(this HttpContext http)
         {
-            var baseDomain = get_base_domain(http.Request.Url.Host);
-            cookie.Domain = "." + baseDomain;
+            return
+                get_base_domain(http.Request.Url.Host);
         }
 
         public static bool it_is_my_domain(this HttpContext http, string url)
@@ -270,18 +281,6 @@ namespace L4p.WebApi
 
             return
                 http.get_client_ip(out tmp);
-        }
-
-        public static string get_client_country_code(this HttpContext http)
-        {
-            return
-                IP2Country.GetUserCountry();
-        }
-
-        public static string get_client_country_code(this HttpContext http, string ip)
-        {
-            return
-                IP2Country.GetUserCountry(ip);
         }
     }
 }

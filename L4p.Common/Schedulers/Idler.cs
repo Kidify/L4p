@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using NUnit.Framework;
+using L4p.Common.Helpers;
 using L4p.Common.Extensions;
 using L4p.Common.Loggers;
 
-namespace L4p.Common.Idlers
+namespace L4p.Common.Schedulers
 {
-    interface IIdler
+    public interface IIdler
     {
         void Stop();
         void Idle(TimeSpan period, Action action);
     }
 
-    class Idler : IIdler
+    public class Idler : IIdler
     {
         #region config
 
@@ -76,10 +76,11 @@ namespace L4p.Common.Idlers
 
         private void stop_timer(Timer timer, TimeSpan stopSpan)
         {
-            var stopEvent = new ManualResetEvent(false);
-
-            timer.Dispose(stopEvent);
-            stopEvent.WaitOne(stopSpan);
+            using (var stopEvent = new ManualResetEvent(false))
+            {
+                timer.Dispose(stopEvent);
+                stopEvent.WaitOne(stopSpan);
+            }
         }
 
         private void add_timer(Timer timer)
@@ -107,7 +108,9 @@ namespace L4p.Common.Idlers
 
             foreach (var timer in timers)
             {
-                stop_timer(timer, _config.StopSpan);
+                Try.Catch.Handle(
+                    () => stop_timer(timer, _config.StopSpan),
+                    ex => _log.Warn("Failed to stop a timer: {0}", ex.Message));
             }
         }
 

@@ -106,54 +106,82 @@ namespace L4p.Common.Loggers
 
         #region interface
 
-        void ILogFile.Error(string msg, params object[] args)
+        ILogFile ILogFile.Error(string msg, params object[] args)
         {
             dispatch(
                 () => _peer.Error(msg, args), msg, args);
+
+            return this;
         }
 
-        void ILogFile.Error(Exception ex)
+        ILogFile ILogFile.Error(Exception ex)
         {
             dispatch(
                 () => _peer.Error(ex), ex.Message);
+
+            return this;
         }
 
-        void ILogFile.Error(Exception ex, string msg, params object[] args)
+        ILogFile ILogFile.Error(Exception ex, string msg, params object[] args)
         {
             dispatch(
                 () => _peer.Error(ex, msg, args), msg, args);
+
+            return this;
         }
 
-        void ILogFile.Warn(string msg, params object[] args)
+        ILogFile ILogFile.Warn(string msg, params object[] args)
         {
             dispatch(
                 () => _peer.Warn(msg, args), msg, args);
+
+            return this;
         }
 
-        void ILogFile.Warn(Exception ex, string msg, params object[] args)
+        ILogFile ILogFile.Warn(Exception ex, string msg, params object[] args)
         {
             dispatch(
                 () => _peer.Warn(ex, msg, args), msg, args);
+
+            return this;
         }
 
-        void ILogFile.Info(string msg, params object[] args)
+        ILogFile ILogFile.Info(string msg, params object[] args)
         {
             dispatch(
                 () => _peer.Info(msg, args), msg, args);
+
+            return this;
         }
 
-        void ILogFile.Trace(string msg, params object[] args)
+        ILogFile ILogFile.Trace(string msg, params object[] args)
         {
             if (_peer.TraceOn == false)
-                return;
+                return this;
 
             dispatch(
                 () => _peer.Trace(msg, args), msg, args);
+
+            return this;
+        }
+
+        ILogFile ILogFile.NewFile()
+        {
+            _ager.Clear();
+            _set.Clear();
+            _peer.NewFile();
+
+            return this;
         }
 
         string ILogFile.Name
         {
             get { return _peer.Name; }
+        }
+
+        string ILogFile.Path
+        {
+            get { return _peer.Path; }
         }
 
         bool ILogFile.TraceOn
@@ -173,17 +201,24 @@ namespace L4p.Common.Loggers
         public static ILogFile New(ILogFile impl) { return new SyncThrottledLog(impl); }
         private SyncThrottledLog(ILogFile impl) { _impl = impl; }
 
-        void ILogFile.Error(string msg, params object[] args) { lock(_mutex) _impl.Error(msg, args); }
-        void ILogFile.Error(Exception ex) { lock(_mutex) _impl.Error(ex); }
-        void ILogFile.Error(Exception ex, string msg, params object[] args) { lock(_mutex) _impl.Error(ex, msg, args); }
-        void ILogFile.Warn(string msg, params object[] args) { lock(_mutex) _impl.Warn(msg, args); }
-        void ILogFile.Warn(Exception ex, string msg, params object[] args) { lock(_mutex) _impl.Warn(ex, msg, args); }
-        void ILogFile.Info(string msg, params object[] args) { lock(_mutex) _impl.Info(msg, args); }
-        void ILogFile.Trace(string msg, params object[] args) { lock(_mutex) _impl.Trace(msg, args); }
+        ILogFile ILogFile.Error(string msg, params object[] args) { lock (_mutex) _impl.Error(msg, args); return this; }
+        ILogFile ILogFile.Error(Exception ex) { lock(_mutex) _impl.Error(ex); return this; }
+        ILogFile ILogFile.Error(Exception ex, string msg, params object[] args) { lock(_mutex) _impl.Error(ex, msg, args); return this; }
+        ILogFile ILogFile.Warn(string msg, params object[] args) { lock(_mutex) _impl.Warn(msg, args); return this; }
+        ILogFile ILogFile.Warn(Exception ex, string msg, params object[] args) { lock(_mutex) _impl.Warn(ex, msg, args); return this; }
+        ILogFile ILogFile.Info(string msg, params object[] args) { lock(_mutex) _impl.Info(msg, args); return this; }
+        ILogFile ILogFile.Trace(string msg, params object[] args) { lock(_mutex) _impl.Trace(msg, args); return this; }
+        ILogFile ILogFile.NewFile() { lock(_mutex) _impl.NewFile(); return this; }
+
 
         string ILogFile.Name
         {
             get { return _impl.Name; }
+        }
+
+        string ILogFile.Path
+        {
+            get { return _impl.Path; }
         }
 
         bool ILogFile.TraceOn
@@ -192,5 +227,4 @@ namespace L4p.Common.Loggers
             set { _impl.TraceOn = value; }
         }
     }
-
 }

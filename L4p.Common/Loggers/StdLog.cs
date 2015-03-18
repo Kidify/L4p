@@ -47,17 +47,19 @@ namespace L4p.Common.Loggers
 
         #region interface
 
-        void ILogFile.Error(string msg, params object[] args)
+        ILogFile ILogFile.Error(string msg, params object[] args)
         {
             write_msg("E", msg, args);
+            return this;
         }
 
-        void ILogFile.Error(Exception ex)
+        ILogFile ILogFile.Error(Exception ex)
         {
             write_msg("E", ex.FormatHierarchy());
+            return this;
         }
 
-        void ILogFile.Error(Exception ex, string msg, params object[] args)
+        ILogFile ILogFile.Error(Exception ex, string msg, params object[] args)
         {
             var sb = new StringBuilder();
 
@@ -67,14 +69,16 @@ namespace L4p.Common.Loggers
                 .Append(ex.FormatHierarchy());
 
             write_msg("E", sb.ToString());
+            return this;
         }
 
-        void ILogFile.Warn(string msg, params object[] args)
+        ILogFile ILogFile.Warn(string msg, params object[] args)
         {
             write_msg("W", msg, args);
+            return this;
         }
 
-        void ILogFile.Warn(Exception ex, string msg, params object[] args)
+        ILogFile ILogFile.Warn(Exception ex, string msg, params object[] args)
         {
             var sb = new StringBuilder();
 
@@ -84,24 +88,37 @@ namespace L4p.Common.Loggers
                 .Append(ex.FormatHierarchy());
 
             write_msg("W", sb.ToString());
+            return this;
         }
 
-        void ILogFile.Info(string msg, params object[] args)
+        ILogFile ILogFile.Info(string msg, params object[] args)
         {
             write_msg("I", msg, args);
+            return this;
         }
 
-        void ILogFile.Trace(string msg, params object[] args)
+        ILogFile ILogFile.Trace(string msg, params object[] args)
         {
             if (_traceOn == false)
-                return;
+                return this;
 
             write_msg("T", msg, args);
+            return this;
+        }
+
+        ILogFile ILogFile.NewFile()
+        {
+            return this;
         }
 
         string ILogFile.Name
         {
             get { return _name; }
+        }
+
+        string ILogFile.Path
+        {
+            get { return String.Empty; }
         }
 
         bool ILogFile.TraceOn

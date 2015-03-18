@@ -31,6 +31,8 @@ namespace L4p.Common.Tcp
 
         public static ILineStreamReader New(string url, ILogFile log, TimeSpan? receiveTimeout = null)
         {
+            Validate.NotEmpty(url);
+
             string host = null;
             int port = 0;
 
@@ -151,7 +153,7 @@ namespace L4p.Common.Tcp
             }
             catch (Exception ex)
             {
-                _log.Warn("Connection has failed '{0}'", _info);
+                _log.Warn("Connection has failed '{0}' ({1})", _info, ex.Message);
                 close_connection();
                 throw;
             }

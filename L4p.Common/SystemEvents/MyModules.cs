@@ -15,7 +15,7 @@ namespace L4p.Common.SystemEvents
         Type[] GetInitializersTypes(Assembly[] entryAssemblies);
         IShouldRunOnSystemStart[] InstantiateInitializers(Type[] types);
         IShouldRunOnSystemStart[] OrderInitializers(IShouldRunOnSystemStart[] instances);
-        int CallInitializers(IShouldRunOnSystemStart[] instances);
+        int CallInitializers(string moduleKey, IShouldRunOnSystemStart[] instances);
     }
 
     class MyModules : IMyModules
@@ -84,11 +84,11 @@ namespace L4p.Common.SystemEvents
             }
         }
 
-        private bool call_initializer(IShouldRunOnSystemStart instance)
+        private bool call_initializer(string moduleKey, IShouldRunOnSystemStart instance)
         {
             try
             {
-                instance.SystemIsBeingStarted(_log);
+                instance.SystemIsBeingStarted(moduleKey, _log);
                 return true;
             }
             catch (Exception ex)
@@ -268,13 +268,13 @@ namespace L4p.Common.SystemEvents
                 query.ToArray();
         }
 
-        int IMyModules.CallInitializers(IShouldRunOnSystemStart[] instances)
+        int IMyModules.CallInitializers(string moduleKey, IShouldRunOnSystemStart[] instances)
         {
             var count = 0;
 
             foreach (var instance in instances)
             {
-                var ok = call_initializer(instance);
+                var ok = call_initializer(moduleKey, instance);
 
                 if (ok == false)
                     continue;

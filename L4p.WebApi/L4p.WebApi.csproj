@@ -77,10 +77,6 @@
     <Compile Include="IpList.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ASP.NET\IP2Country\IP2Country.csproj">
-      <Project>{63D9AF62-24A1-4E57-8CFA-84B8396F8BA4}</Project>
-      <Name>IP2Country</Name>
-    </ProjectReference>
     <ProjectReference Include="..\L4p.Common\L4p.Common.csproj">
       <Project>{8427CF88-3940-4BA4-8129-CE9390455884}</Project>
       <Name>L4p.Common</Name>

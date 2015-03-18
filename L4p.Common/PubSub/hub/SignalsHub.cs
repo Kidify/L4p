@@ -3,7 +3,6 @@ using System.Dynamic;
 using System.Threading;
 using L4p.Common.DumpToLogs;
 using L4p.Common.Extensions;
-using L4p.Common.Idlers;
 using L4p.Common.IoCs;
 using L4p.Common.Json;
 using L4p.Common.Loggers;

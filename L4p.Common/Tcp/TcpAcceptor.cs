@@ -9,7 +9,7 @@ using L4p.Common.Loggers;
 
 namespace L4p.Common.Tcp
 {
-    public delegate void AcceptedCallback(StreamWriter tcp);
+    public delegate void AcceptedCallback(string epoint, StreamWriter tcp);
 
     public interface ITcpAcceptor : IShouldBeStarted
     {
@@ -65,10 +65,11 @@ namespace L4p.Common.Tcp
                     continue;
 
                 var client = _acceptor.AcceptTcpClient();
-                _log.Info("got connection from '{0}'", client.Client.RemoteEndPoint);
+                var epoint = client.Client.RemoteEndPoint.ToString();
+                _log.Info("got connection from '{0}'", epoint);
 
                 var writer = new StreamWriter(client.GetStream());
-                _acceptedCallback(writer);
+                _acceptedCallback(epoint, writer);
             }
         }
 
@@ -86,7 +87,7 @@ namespace L4p.Common.Tcp
 
             _log.Info("listening on port {0}", epoint.Port);
 
-            _thr.Start();
+            _thr.Start(this.GetType().Name);
         }
 
         void ITcpAcceptor.Stop()

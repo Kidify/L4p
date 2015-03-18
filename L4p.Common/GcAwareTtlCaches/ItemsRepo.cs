@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace L4p.Common.GcCaches
+namespace L4p.Common.GcAwareTtlCaches
 {
     interface IItemsRepo<TInstance>
         where TInstance : class

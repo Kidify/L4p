@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Web;
 using L4p.Common.Extensions;
 using L4p.Common.Helpers;
 using L4p.Common.NUnits;
@@ -13,15 +12,18 @@ namespace L4p.Common.Loggers
 {
     public interface ILogFile
     {
-        void Error(string msg, params object[] args);
-        void Error(Exception ex);
-        void Error(Exception ex, string msg, params object[] args);
-        void Warn(string msg, params object[] args);
-        void Warn(Exception ex, string msg, params object[] args);
-        void Info(string msg, params object[] args);
-        void Trace(string msg, params object[] args);
+        ILogFile Error(string msg, params object[] args);
+        ILogFile Error(Exception ex);
+        ILogFile Error(Exception ex, string msg, params object[] args);
+        ILogFile Warn(string msg, params object[] args);
+        ILogFile Warn(Exception ex, string msg, params object[] args);
+        ILogFile Info(string msg, params object[] args);
+        ILogFile Trace(string msg, params object[] args);
+
+        ILogFile NewFile();
 
         string Name { get; }
+        string Path { get; }
         bool TraceOn { get; set; }
     }
 
@@ -162,17 +164,19 @@ namespace L4p.Common.Loggers
 
         #region interface
 
-        void ILogFile.Error(string msg, params object[] args)
+        ILogFile ILogFile.Error(string msg, params object[] args)
         {
             write_msg("E", msg, args);
+            return this;
         }
 
-        void ILogFile.Error(Exception ex)
+        ILogFile ILogFile.Error(Exception ex)
         {
             write_msg("E", ex.FormatHierarchy());
+            return this;
         }
 
-        void ILogFile.Error(Exception ex, string msg, params object[] args)
+        ILogFile ILogFile.Error(Exception ex, string msg, params object[] args)
         {
             var sb = new StringBuilder();
 
@@ -182,14 +186,16 @@ namespace L4p.Common.Loggers
                 .Append(ex.FormatHierarchy());
 
             write_msg("E", sb.ToString());
+            return this;
         }
 
-        void ILogFile.Warn(string msg, params object[] args)
+        ILogFile ILogFile.Warn(string msg, params object[] args)
         {
             write_msg("W", msg, args);
+            return this;
         }
 
-        void ILogFile.Warn(Exception ex, string msg, params object[] args)
+        ILogFile ILogFile.Warn(Exception ex, string msg, params object[] args)
         {
             var sb = new StringBuilder();
 
@@ -199,24 +205,44 @@ namespace L4p.Common.Loggers
                 .Append(ex.FormatHierarchy());
 
             write_msg("W", sb.ToString());
+            return this;
         }
 
-        void ILogFile.Info(string msg, params object[] args)
+        ILogFile ILogFile.Info(string msg, params object[] args)
         {
             write_msg("I", msg, args);
+            return this;
         }
 
-        void ILogFile.Trace(string msg, params object[] args)
+        ILogFile ILogFile.Trace(string msg, params object[] args)
         {
             if (_traceOn == false)
-                return;
+                return this;
 
             write_msg("T", msg, args);
+            return this;
+        }
+
+        ILogFile ILogFile.NewFile()
+        {
+            if (!File.Exists(_path))
+                return this;
+
+            Try.Catch.Handle(
+                () => File.Delete(_path),
+                ex => TraceLogger.WriteLine("Failed to delete file '{0}'", _path));
+
+            return this;
         }
 
         string ILogFile.Name
         {
             get { return _name; }
+        }
+
+        string ILogFile.Path
+        {
+            get { return _path; }
         }
 
         bool ILogFile.TraceOn

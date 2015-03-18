@@ -1,4 +1,4 @@
-namespace L4p.Common.GcCaches
+namespace L4p.Common.GcAwareTtlCaches
 {
     interface IReferenceCounter
     {

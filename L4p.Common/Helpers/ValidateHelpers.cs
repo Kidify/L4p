@@ -43,7 +43,7 @@ namespace L4p.Common.Helpers
         public static void That(bool expr) { validate(expr, "expression should be true"); }
         public static void That(bool expr, string fmt, params object[] args) { validate(expr, fmt.Fmt(args)); }
         public static void NotNull(object value) { validate(value != null, "argument should not be null"); }
-        public static void NotNull(int value) { validate(value != 0, "argument should not be zero"); }
+        public static void NotNull(object value, string fmt, params object[] args) { validate(value != null, fmt.Fmt(args)); }
         public static void NotZero(int value) { validate(value != 0, "argument should not be zero"); }
         public static void NotZero(double value) { validate(Math.Abs(value - 0) > double.Epsilon, "argument should not be zero"); }
         public static void NotZero(decimal value) { validate(value != 0, "argument should not be zero"); }

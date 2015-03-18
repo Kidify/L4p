@@ -4,14 +4,16 @@ namespace L4p.Common.Loggers
 {
     public class NullLogFile : ILogFile
     {
-        void ILogFile.Error(string msg, params object[] args) {}
-        void ILogFile.Error(Exception ex) { }
-        void ILogFile.Error(Exception ex, string msg, params object[] args) {}
-        void ILogFile.Warn(string msg, params object[] args) {}
-        void ILogFile.Warn(Exception ex, string msg, params object[] args) { }
-        void ILogFile.Info(string msg, params object[] args) {}
-        void ILogFile.Trace(string msg, params object[] args) {}
+        ILogFile ILogFile.Error(string msg, params object[] args) { return this; }
+        ILogFile ILogFile.Error(Exception ex) { return this; }
+        ILogFile ILogFile.Error(Exception ex, string msg, params object[] args) { return this; }
+        ILogFile ILogFile.Warn(string msg, params object[] args) { return this; }
+        ILogFile ILogFile.Warn(Exception ex, string msg, params object[] args) { return this; }
+        ILogFile ILogFile.Info(string msg, params object[] args) { return this; }
+        ILogFile ILogFile.Trace(string msg, params object[] args) { return this; }
+        ILogFile ILogFile.NewFile() { return this; }
         string ILogFile.Name {get { return String.Empty; } }
+        string ILogFile.Path { get { return String.Empty; } }
         bool ILogFile.TraceOn { get; set; }
     }
 

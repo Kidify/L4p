@@ -63,5 +63,22 @@ namespace L4p.Common.Extensions
 
             return count;
         }
+
+        public static bool IsEmpty<T>(this LinkedList<T> list)
+        {
+            if (list == null)
+                return true;
+
+            if (list.Count == 0)
+                return true;
+
+            return false;
+        }
+
+        public static bool IsNotEmpty<T>(this LinkedList<T> list)
+        {
+            return
+                !list.IsEmpty();
+        }
     }
 }

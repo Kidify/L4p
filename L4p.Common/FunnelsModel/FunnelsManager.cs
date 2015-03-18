@@ -4,7 +4,7 @@ using L4p.Common.Extensions;
 using L4p.Common.FunnelsModel.client;
 using L4p.Common.FunnelsModel.config;
 using L4p.Common.FunnelsModel.io;
-using L4p.Common.GcCaches;
+using L4p.Common.GcAwareTtlCaches;
 using L4p.Common.IoCs;
 using L4p.Common.Loggers;
 using L4p.Common.Schedulers;
@@ -40,7 +40,7 @@ namespace L4p.Common.FunnelsModel
         private readonly ThreadLocal<IFunnel> _current;
         private readonly IIoC _ioc;
         private readonly IFunnelsRepo _repo;
-        private readonly IGcCache<IFunnel, IFunnelStore> _cache;
+        private readonly ITtlCache<IFunnel, IFunnelStore> _cache;
         private readonly IEventScheduler _idler;
         private readonly IFunnelsAgent _agent;
         private readonly IIoSink _sink;
@@ -69,7 +69,7 @@ namespace L4p.Common.FunnelsModel
             ioc.SingleInstance(FunnelsRepo.New);
             ioc.SingleInstance(IoQueue.New);
             ioc.SingleInstance(IoSink.New);
-            ioc.SingleInstance(GcCache<IFunnel, IFunnelStore>.New);
+            ioc.SingleInstance(TtlCache<IFunnel, IFunnelStore>.New);
             ioc.SingleInstance(() => EventScheduler.New(log));
             ioc.SingleInstance(FunnelsAgent.New);
             ioc.SingleInstance(IoThreads.New);
@@ -88,7 +88,7 @@ namespace L4p.Common.FunnelsModel
             _ioc = ioc;
             _config = _ioc.Resolve<IFmConfigRa>();
             _repo = ioc.Resolve<IFunnelsRepo>();
-            _cache = ioc.Resolve<IGcCache<IFunnel, IFunnelStore>>();
+            _cache = ioc.Resolve<ITtlCache<IFunnel, IFunnelStore>>();
             _idler = ioc.Resolve<IEventScheduler>();
             _agent = ioc.Resolve<IFunnelsAgent>();
             _sink = ioc.Resolve<IIoSink>();
