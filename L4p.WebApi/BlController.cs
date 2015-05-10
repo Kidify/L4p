@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using L4p.Common.Extensions;
 using L4p.Common.Helpers;
@@ -44,15 +45,21 @@ namespace L4p.WebApi
             var meta = request.GetMeta;
 
             if (args.Has("en"))
-                meta.Language = AnyRequest.ELanguage.En;
+                meta.Language = ELanguage.En;
             else
             if (args.Has("ar"))
-                meta.Language = AnyRequest.ELanguage.Ar;
+                meta.Language = ELanguage.Ar;
             else
             if (args.Has("ru"))
-                meta.Language = AnyRequest.ELanguage.Ru;
+                meta.Language = ELanguage.Ru;
             else
-                meta.Language = AnyRequest.ELanguage.En;
+            if (args.Has("fr"))
+                meta.Language = ELanguage.Fr;
+            else
+            if (args.Has("de"))
+                meta.Language = ELanguage.De;
+            else
+                meta.Language = ELanguage.En;
         }
 
         protected void start_request(HttpContext http, IAnyRequest request)
@@ -84,8 +91,8 @@ namespace L4p.WebApi
                 if (outArgs.ErrorCode == AnyRequest.Ok)
                     return;
 
-                Log.Error("Request with unexpected error code ({2}: {3}) trackingId='{0}' {1}", 
-                    trackingId, inArgs.ToJson(), outArgs.ErrorCode, outArgs.ErrorMessage);
+                Log.Warn("Response ({0}) with unexpected error code ({1})': '{2}'; {3}", 
+                    trackingId, outArgs.ErrorCode, outArgs.ErrorMessage, inArgs.AsSingleLineJson());
 
                 var feInputFailure =
                     outArgs.ErrorCode.StartsWith("RC_") && outArgs.ErrorCode != "RC_EXCEPTION";
@@ -105,11 +112,25 @@ namespace L4p.WebApi
             var inArgs = request != null ? request.GetIn : null;
             var trackingId = inArgs != null ? inArgs.TrackingId : "n/a";
 
-            Log.Error(ex, "Unexpected exception while processing request with trackingId='{0}' {1}", trackingId, inArgs.ToJson());
+            var path = http.Request.Path;
+            var queryStr = http.Request.QueryString;
 
-            var errorMsg = ex is BadRequestException ?
-                ex.Message :
-                _oops.Fmt(trackingId);
+            var isBadInput = ex is BadRequestException;
+
+            if (isBadInput)
+            {
+                Log.Warn("{4} while processing request '{0}/{1}' (trackingId='{2}'); '{3}'",
+                    path, queryStr, trackingId, inArgs.AsSingleLineJson(), ex.Message);
+
+            }
+            else
+            {
+                Log.Error(ex, "Unexpected exception while processing request '{0}/{1}' (trackingId='{2}'); '{3}'",
+                    path, queryStr, trackingId, inArgs.AsSingleLineJson());
+
+            }
+
+            var errorMsg = isBadInput ? ex.Message : _oops.Fmt(trackingId);
 
             var outArgs = new AnyRequest.FailedArgs
             {
@@ -119,6 +140,26 @@ namespace L4p.WebApi
             };
 
             http.set_jsonp_response(outArgs);
+        }
+
+        protected bool validate_request(IAnyRequest request, Action validateIt)
+        {
+            try
+            {
+                validateIt();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var rOut = request.GetOut;
+
+                rOut.ErrorCode = "BAD_INPUT";
+                rOut.ErrorMessage = ex.Message;
+
+                Log.Warn("Bad request ({0}): {1}; {2}", request.GetIn.TrackingId, ex.Message, request.GetIn.AsSingleLineJson());
+
+                return false;
+            }
         }
 
         void IBlController.RegisterRoutes(IHttpServer server)

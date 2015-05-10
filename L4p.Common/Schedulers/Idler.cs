@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using L4p.Common.Helpers;
 using L4p.Common.Extensions;
+using L4p.Common.InsightCounters;
 using L4p.Common.Loggers;
 
 namespace L4p.Common.Schedulers
@@ -13,8 +14,30 @@ namespace L4p.Common.Schedulers
         void Idle(TimeSpan period, Action action);
     }
 
+    class IdlerAction
+    {
+        public Action Action { get; set; }
+        public Timer Timer { get; set; }
+        public TimeSpan Period { get; set; }
+        public int Mutex;
+        public long SuccessfulExecutions;
+        public long FailedExecutions;
+        public long SkippedExecutions;
+    }
+
     public class Idler : IIdler
     {
+        #region counters
+
+        class Counters
+        {
+            public long JobsExcecuted;
+            public long JobsFailed;
+            public long JobsSkipped;
+        }
+
+        #endregion
+
         #region config
 
         public class Config
@@ -31,9 +54,10 @@ namespace L4p.Common.Schedulers
 
         #region members
 
+        private readonly Counters _counters;
         private readonly ILogFile _log;
         private readonly Config _config;
-        private Timer[] _timers;
+        private IdlerAction[] _jobs;
 
         #endregion
 
@@ -48,49 +72,80 @@ namespace L4p.Common.Schedulers
         private Idler(ILogFile log, Config config)
         {
             _log = log.WrapIfNull();
+            _counters = MyCounters.New<Counters>(log);
             _config = config;
-            _timers = new Timer[0];
+            _jobs = new IdlerAction[0];
         }
 
         #endregion
 
         #region private
 
-        private void idle(Action action)
+        private IdlerAction new_job(Action action, TimeSpan period)
         {
+            return new IdlerAction {
+                Action = action,
+                Period = period,
+                Mutex = 0
+            };
+        }
+
+        private void idle_job(IdlerAction job)
+        {
+            int concurrentJobs = Interlocked.Increment(ref job.Mutex);
+
             try
             {
-                action();
+                if (concurrentJobs > 1)
+                {
+                    Interlocked.Increment(ref job.SkippedExecutions);
+                    Interlocked.Increment(ref _counters.JobsSkipped);
+                    return;
+                }
+
+                job.Action();
+                Interlocked.Increment(ref job.SuccessfulExecutions);
+                Interlocked.Increment(ref _counters.JobsExcecuted);
             }
             catch (Exception ex)
             {
+                Interlocked.Increment(ref job.FailedExecutions);
+                Interlocked.Increment(ref _counters.JobsFailed);
                 _log.Error(ex);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref job.Mutex);
             }
         }
 
-        private Timer start_timer(TimeSpan period, Action action)
+        private IdlerAction start_job(TimeSpan period, Action action)
         {
-            return new Timer(
-                obj => idle(action), null, period, period);
+            var job = new_job(action, period);
+
+            job.Timer = new Timer(
+                obj => idle_job(job), null, period, period);
+
+            return job;
         }
 
-        private void stop_timer(Timer timer, TimeSpan stopSpan)
+        private void stop_job(IdlerAction job, TimeSpan stopSpan)
         {
             using (var stopEvent = new ManualResetEvent(false))
             {
-                timer.Dispose(stopEvent);
+                job.Timer.Dispose(stopEvent);
                 stopEvent.WaitOne(stopSpan);
             }
         }
 
-        private void add_timer(Timer timer)
+        private void add_job(IdlerAction job)
         {
             lock (this)
             {
-                var list = new List<Timer>(_timers);
-                list.Add(timer);
+                var list = new List<IdlerAction>(_jobs);
+                list.Add(job);
 
-                _timers = list.ToArray();
+                _jobs = list.ToArray();
             }
         }
 
@@ -100,8 +155,8 @@ namespace L4p.Common.Schedulers
 
         void IIdler.Stop()
         {
-            var timers = _timers;
-            _timers = null;
+            var timers = _jobs;
+            _jobs = null;
 
             if (timers.IsEmpty())
                 return;
@@ -109,15 +164,15 @@ namespace L4p.Common.Schedulers
             foreach (var timer in timers)
             {
                 Try.Catch.Handle(
-                    () => stop_timer(timer, _config.StopSpan),
+                    () => stop_job(timer, _config.StopSpan),
                     ex => _log.Warn("Failed to stop a timer: {0}", ex.Message));
             }
         }
 
         void IIdler.Idle(TimeSpan period, Action action)
         {
-            var timer = start_timer(period, action);
-            add_timer(timer);
+            var timer = start_job(period, action);
+            add_job(timer);
         }
 
         #endregion

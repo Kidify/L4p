@@ -1,28 +1,45 @@
 ﻿using System;
 using System.Dynamic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using L4p.Common.Extensions;
 using L4p.Common.Helpers;
 using L4p.Common.Json;
 using L4p.Common.Loggers;
 using L4p.Common.PubSub;
+using L4p.Common.Schedulers;
 using L4p.Common.Wipers;
 
 namespace L4p.Common.DumpToLogs
 {
     public delegate ExpandoObject DumpFunc(dynamic root);
 
-    public interface IDumpManager
+    public interface IDumpManager : IHaveDump
     {
         void Register(DumpFunc dumpFunc, ILogFile log, IAmAComponent component, IWiper wiper = null);
-        void DumpComponent(string componentName);
+        void DumpComponent(DumpToLogMsg msg);
     }
 
     public class DumpManager : IDumpManager
     {
+        #region counters
+
+        class Counters
+        {
+            public int UnknownComponents;
+            public int Registrations;
+            public int DumpRequests;
+            public int DumpsDone;
+            public int DumpFunctionsInvoked;
+            public int DumpFunctionFailed;
+        }
+
+        #endregion
+
         #region members
 
-        private readonly ISignalsManager _signals;
+        private readonly Counters _counters;
         private readonly IDumpRepo _repo;
         private readonly ILogFile _bootstrap;
 
@@ -30,11 +47,12 @@ namespace L4p.Common.DumpToLogs
 
         #region singleton
 
-        private static IDumpManager _instance;
+        private static readonly IDumpManager _instance;
 
         static DumpManager()
         {
             _instance = New();
+            DeferredCall.Start(200.Milliseconds(), () => make_subscriptions(_instance));
         }
 
         public static IDumpManager Instance
@@ -55,15 +73,15 @@ namespace L4p.Common.DumpToLogs
 
         #region construction
 
-        public static IDumpManager New(ISignalsManager signals = null)
+        public static IDumpManager New()
         {
             return
-                new DumpManager(signals ?? Signals.Instance);
+                new DumpManager();
         }
 
-        private DumpManager(ISignalsManager signals)
+        private DumpManager()
         {
-            _signals = signals;
+            _counters = new Counters();
             _repo = DumpRepo.NewSync();
             _bootstrap = LogFile.New("bootstrap.log", true);
         }
@@ -72,49 +90,103 @@ namespace L4p.Common.DumpToLogs
 
         #region private
 
-        private static string make_dump(DumpFunc dumpFunc)
+        private static void make_subscriptions(IDumpManager self)
         {
+            Register<DumpComponent>(self.Dump);
+            Signals.SubscribeTo<DumpToLogMsg>(self.DumpComponent);
+        }
+
+        private string get_class_name(DumpFunc dumpFunc)
+        {
+            if (dumpFunc == null)
+                return "n/a";
+
+            var target = dumpFunc.Target;
+
+            if (target == null)
+                return "n/a";
+
+            return
+                target.GetType().Name;
+        }
+
+        private ExpandoObject call_single_dump(DumpFunc dumpFunc, ILogFile log)
+        {
+            if (dumpFunc == null)
+                return null;
+
+            dynamic dump = new ExpandoObject();
+
+            var className = get_class_name(dumpFunc);
+            dump.__Class = className;
+
             try
             {
-                var dump = dumpFunc(null);
-                var json = dump.AsReadableJson();
-
-                return json;
+                dump = dumpFunc(dump);
+                Interlocked.Increment(ref _counters.DumpFunctionsInvoked);
             }
             catch (Exception ex)
             {
-                TraceLogger.WriteLine(ex);
-                return null;
+                log.Error(ex);
+                Interlocked.Increment(ref _counters.DumpFunctionFailed);
             }
+
+            return dump;
         }
 
-        private static void got_dump_to_log_msg(IDumpManager self, DumpToLogMsg msg)
+        private string make_dump(DumpInfo info)
         {
-            self.DumpComponent(msg.ComponentName);
+            dynamic root = new ExpandoObject();
+
+            var component = info.Component;
+            root.Component = "Component '{0}' '{1}'".Fmt(component.Name, component.Version);
+
+            var calls =
+                from dumpFunc in info.Dumps
+                let dump = call_single_dump(dumpFunc, info.Log)
+                where dump != null
+                select dump;
+
+            root.Dumps = calls.ToArray();
+            var json = JsonHelpers.AsReadableJson(root);
+
+            return json;
         }
 
         #endregion
 
         #region interface
 
+        ExpandoObject IHaveDump.Dump(dynamic root)
+        {
+            if (root == null)
+                root = new ExpandoObject();
+
+            root.Counters = _counters;
+            root.Repo = _repo.Dump();
+
+            return root;
+        }
+
         void IDumpManager.Register(DumpFunc dumpFunc, ILogFile log, IAmAComponent component, IWiper wiper)
         {
             Validate.NotNull(log);
 
             if (component == null)
+            {
                 component = new UnknownComponent();
+                Interlocked.Increment(ref _counters.UnknownComponents);
+            }
 
             wiper = wiper.WrapIfNull();
 
             string componentName = component.Name;
             Validate.NotEmpty(componentName);
 
-            string lowerName = componentName.ToLowerInvariant();
-
             var info = new DumpInfo {
                 Component = component,
                 Log = log,
-                DumpFunc = dumpFunc
+                Dumps = new [] {dumpFunc}
             };
 
             _repo.AddComponent(info);
@@ -122,31 +194,37 @@ namespace L4p.Common.DumpToLogs
             wiper.que += 
                 () => _repo.RemoveComponent(componentName);
 
-            var slot = _signals.SubscribeTo<DumpToLogMsg>(
-                msg => got_dump_to_log_msg(this, msg),
-                msg => msg.ComponentName == lowerName);
-
-            wiper.que += slot.Cancel;
-
-            var wellcome = "Component '{0}' version '{1}' is here".Fmt(component.Name, component.Version);
+            var className = get_class_name(dumpFunc);
+            var wellcome = "Component '{0}' '{1}' ({2}) is registered for dumps".Fmt(component.Name, component.Version, className);
 
             _bootstrap.Info(wellcome);
             log.Info(wellcome);
+
+            Interlocked.Increment(ref _counters.Registrations);
         }
 
-        void IDumpManager.DumpComponent(string componentName)
+        void IDumpManager.DumpComponent(DumpToLogMsg msg)
         {
+            Interlocked.Increment(ref _counters.DumpRequests);
+
+            var componentName = msg.ComponentName;
+
+            if (componentName.IsEmpty())
+                return;
+
             var info = _repo.GetComponent(componentName);
 
             if (info == null)
                 return;
 
-            var dump = make_dump(info.DumpFunc);
+            var dump = make_dump(info);
 
             if (dump.IsEmpty())
                 return;
 
             info.Log.Info(dump);
+
+            Interlocked.Increment(ref _counters.DumpsDone);
         }
 
         #endregion

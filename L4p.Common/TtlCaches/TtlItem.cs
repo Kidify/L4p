@@ -1,21 +1,21 @@
 using System;
 using System.Threading;
 
-namespace L4p.Common.GcAwareTtlCaches
+namespace L4p.Common.TtlCaches
 {
-    interface ITtlItem<TInstance>
-        where TInstance : class
+    interface ITtlItem<TBody>
+        where TBody : class
     {
-        TInstance Instance { get; }
+        TBody Body { get; }
         DateTime DeadSince { get; }
     }
 
-    class TtlItem<TInstance> : ITtlItem<TInstance>, IReferenceCounter
-        where TInstance : class
+    class TtlItem<TBody> : ITtlItem<TBody>, IReferenceCounter
+        where TBody : class
     {
         #region members
 
-        private readonly TInstance _instance;
+        private readonly TBody _body;
 
         private int _referenceCounter;
         private DateTime _deadSince;
@@ -24,15 +24,15 @@ namespace L4p.Common.GcAwareTtlCaches
 
         #region construction
 
-        public static ITtlItem<TInstance> New(TInstance instance)
+        public static ITtlItem<TBody> New(TBody body)
         {
             return
-                new TtlItem<TInstance>(instance);
+                new TtlItem<TBody>(body);
         }
 
-        private TtlItem(TInstance instance)
+        private TtlItem(TBody body)
         {
-            _instance = instance;
+            _body = body;
 
             _referenceCounter = 0;
             _deadSince = DateTime.MaxValue;
@@ -42,14 +42,14 @@ namespace L4p.Common.GcAwareTtlCaches
 
         #region ITtlItem
 
-        public TInstance Instance { get { return _instance; } }
+        public TBody Body { get { return _body; } }
         public DateTime DeadSince { get { return _deadSince; } }
 
         #endregion
 
         #region IReferenceCounter
 
-        void IReferenceCounter.LinkInstance()
+        void IReferenceCounter.LinkBody()
         {
             int count = Interlocked.Increment(ref _referenceCounter);
 
@@ -57,7 +57,7 @@ namespace L4p.Common.GcAwareTtlCaches
                 _deadSince = DateTime.MaxValue;
         }
 
-        void IReferenceCounter.ReleaseInstance()
+        void IReferenceCounter.ReleaseBody()
         {
             int count = Interlocked.Decrement(ref _referenceCounter);
 

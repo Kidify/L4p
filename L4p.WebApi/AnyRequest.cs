@@ -26,8 +26,6 @@ namespace L4p.WebApi
             string ErrorMessage { get; set; }
         }
 
-        public enum ELanguage { Default, En, Ar, Ru }
-
         public interface IMetaArgs
         {
             ELanguage Language { get; set; }

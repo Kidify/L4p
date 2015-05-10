@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>L4p.Common</RootNamespace>
     <AssemblyName>L4p.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EPPlus">
@@ -81,6 +84,7 @@
     <Compile Include="Agers\_nunit\AgerTests.cs" />
     <Compile Include="BadInputException.cs" />
     <Compile Include="DumpToLogs\DumpManager.cs" />
+    <Compile Include="DumpToLogs\DumpComponent.cs" />
     <Compile Include="DumpToLogs\IAmAComponent.cs" />
     <Compile Include="DumpToLogs\IHaveDump.cs" />
     <Compile Include="DumpToLogs\_nunit\DumpManagerTests.cs" />
@@ -97,6 +101,7 @@
     <Compile Include="ExcelFiles\SingleSheet.cs" />
     <Compile Include="ExcelFiles\_nunit\SubstitutionTests.cs" />
     <Compile Include="FunnelsModel\NotInitializedFunnels.cs" />
+    <Compile Include="InsightCounters\MyCountersManager.cs" />
     <Compile Include="Loggers\StdLog.cs" />
     <Compile Include="MsgIsApplications\MsgContext.cs" />
     <Compile Include="MsgIsApplications\MsgContextProxy.cs" />
@@ -106,19 +111,22 @@
     <Compile Include="MsgIsApplications\MsgValueBox.cs" />
     <Compile Include="MsgIsApplications\Null.cs" />
     <Compile Include="MsgIsApplications\_nunit\PlayWithIt.cs" />
+    <Compile Include="InsightCounters\MyCounters.cs" />
     <Compile Include="PerformanceMeasurers\IPerformaceMeasurer.cs" />
     <Compile Include="PerformanceMeasurers\_nunit\PerformaceMeasurerTests.cs" />
     <Compile Include="PubSub\client\NotInitializedSignals.cs" />
     <Compile Include="PubSub\SignalsComponent.cs" />
-    <Compile Include="Schedulers\DefferredCall.cs" />
+    <Compile Include="PubSub\_nunit\TypeGames.cs" />
+    <Compile Include="Schedulers\DeferredCall.cs" />
+    <Compile Include="Schedulers\_nunit\IdlerTests.cs" />
     <Compile Include="ShouldNotGetHereException.cs" />
     <Compile Include="SystemEvents\IShouldRunOnSystemStart.cs" />
     <Compile Include="SystemEvents\MyModules.cs" />
     <Compile Include="Wipers\NullWiper.cs" />
     <Compile Include="Wipers\_nunit\When_wiper_is_used.cs" />
     <Compile Include="Wipers\Wiper.cs" />
-    <Compile Include="GcAwareTtlCaches\DeathNotifier.cs" />
-    <Compile Include="GcAwareTtlCaches\ItemsRepo.cs" />
+    <Compile Include="TtlCaches\DeathNotifier.cs" />
+    <Compile Include="TtlCaches\ItemsRepo.cs" />
     <Compile Include="Json\_nunit\Json_with_adge_cases.cs" />
     <Compile Include="PubSub\client\Io\AgentConnector.cs" />
     <Compile Include="PubSub\client\Io\AgentWriter.cs" />
@@ -138,8 +146,8 @@
     <Compile Include="PubSub\_nunit\Signals_integration_tests.cs" />
     <Compile Include="PubSub\_nunit\When_agent_is_dead.cs" />
     <Compile Include="SystemEvents\MySystemEvents.cs" />
-    <Compile Include="GcAwareTtlCaches\_nunit\TtlCacheTests.cs" />
-    <Compile Include="GcAwareTtlCaches\TtlItem.cs" />
+    <Compile Include="TtlCaches\_nunit\TtlCacheTests.cs" />
+    <Compile Include="TtlCaches\TtlItem.cs" />
     <Compile Include="Concerns\ConcernsException.cs" />
     <Compile Include="Concerns\ErrorHandlerOf.cs" />
     <Compile Include="Concerns\ManyReadersSingleWriter.cs" />
@@ -243,7 +251,7 @@
     <Compile Include="FunnelsModel\IJsonPort.cs" />
     <Compile Include="FunnelsModel\client\FunnelCache.cs" />
     <Compile Include="FunnelsModel\client\FunnelsRepo.cs" />
-    <Compile Include="GcAwareTtlCaches\TtlCache.cs" />
+    <Compile Include="TtlCaches\TtlCache.cs" />
     <Compile Include="Schedulers\EventInfo.cs" />
     <Compile Include="Schedulers\_nunit\EventSchedulerTests.cs" />
     <Compile Include="Schedulers\IEventSlot.cs" />
@@ -343,6 +351,8 @@
     <Content Include="ConfigurationFiles\_nunit\single_configuration.js" />
     <None Include="FunnelsModel\_doc\Design Decisions.md" />
     <None Include="FunnelsModel\_doc\todo.md" />
+    <None Include="TtlCaches\readme.md" />
+    <None Include="TtlCaches\_doc\ttl-cache.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="_nunit\" />

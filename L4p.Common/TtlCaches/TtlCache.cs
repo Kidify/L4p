@@ -1,39 +1,39 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace L4p.Common.GcAwareTtlCaches
+namespace L4p.Common.TtlCaches
 {
-    public interface ITtlCache<TFacet, TInstance>
+    public interface ITtlCache<TFacet, TBody>
         where TFacet : class
-        where TInstance : class
+        where TBody : class
     {
-        void AddInstance(TFacet facet, TInstance instance);
-        TInstance[] GetDeadInstances(TimeSpan ttl);
+        void Store(TFacet facet, TBody body);
+        TBody[] GetDeadBodies(TimeSpan ttl);
     }
 
-    public class TtlCache<TFacet, TInstance> : ITtlCache<TFacet, TInstance>
+    public class TtlCache<TFacet, TBody> : ITtlCache<TFacet, TBody>
         where TFacet : class
-        where TInstance : class
+        where TBody : class
     {
         #region members
 
         private readonly ConditionalWeakTable<TFacet, DeathNotifier> _deathAgent;
-        private readonly IItemsRepo<TInstance> _repo;
+        private readonly IItemsRepo<TBody> _repo;
 
         #endregion
 
         #region construction
 
-        public static ITtlCache<TFacet, TInstance> New()
+        public static ITtlCache<TFacet, TBody> New()
         {
             return
-                new TtlCache<TFacet, TInstance>();
+                new TtlCache<TFacet, TBody>();
         }
 
         private TtlCache()
         {
             _deathAgent = new ConditionalWeakTable<TFacet, DeathNotifier>();
-            _repo = ItemsRepo<TInstance>.New();
+            _repo = ItemsRepo<TBody>.New();
         }
 
         #endregion
@@ -43,24 +43,24 @@ namespace L4p.Common.GcAwareTtlCaches
 
         #region ITtlCache
 
-        void ITtlCache<TFacet, TInstance>.AddInstance(TFacet facet, TInstance instance)
+        void ITtlCache<TFacet, TBody>.Store(TFacet facet, TBody body)
         {
-            var item = _repo.GetBy(instance);
+            var item = _repo.GetBy(body);
 
             if (item == null)
             {
-                item = TtlItem<TInstance>.New(instance);
+                item = TtlItem<TBody>.New(body);
                 item = _repo.Add(item);
             }
 
             var reference = (IReferenceCounter) item;
             var notifier = new DeathNotifier(reference);
 
-            // if death agent is already aware of the instance do nothing
+            // if death agent is already aware of the body do nothing
             try
             {
                 _deathAgent.Add(facet, notifier);
-                reference.LinkInstance();
+                reference.LinkBody();
             }
             catch (ArgumentException)   // key already exists
             {
@@ -68,7 +68,7 @@ namespace L4p.Common.GcAwareTtlCaches
             }
         }
 
-        TInstance[] ITtlCache<TFacet, TInstance>.GetDeadInstances(TimeSpan ttl)
+        TBody[] ITtlCache<TFacet, TBody>.GetDeadBodies(TimeSpan ttl)
         {
             var items = _repo.GetDeadItems(ttl);
 
@@ -81,14 +81,14 @@ namespace L4p.Common.GcAwareTtlCaches
             _repo.Remove(items);
 
             var count = items.Length;
-            var instances = new TInstance[count];
+            var bodies = new TBody[count];
 
             for (int indx = 0; indx < count; indx++)
             {
-                instances[indx] = items[indx].Instance;
+                bodies[indx] = items[indx].Body;
             }
 
-            return instances;
+            return bodies;
         }
 
         #endregion

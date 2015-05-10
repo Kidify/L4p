@@ -87,5 +87,12 @@ namespace L4p.Common.Extensions
             return
                 TimeSpan.Parse(span);
         }
+
+        public static bool IsLike(this string me, string other)
+        {
+            return
+                String.Compare(me, other, StringComparison.InvariantCultureIgnoreCase) == 0;
+
+        }
     }
 }

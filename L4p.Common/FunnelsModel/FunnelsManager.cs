@@ -4,10 +4,10 @@ using L4p.Common.Extensions;
 using L4p.Common.FunnelsModel.client;
 using L4p.Common.FunnelsModel.config;
 using L4p.Common.FunnelsModel.io;
-using L4p.Common.GcAwareTtlCaches;
 using L4p.Common.IoCs;
 using L4p.Common.Loggers;
 using L4p.Common.Schedulers;
+using L4p.Common.TtlCaches;
 
 
 namespace L4p.Common.FunnelsModel
@@ -141,7 +141,7 @@ namespace L4p.Common.FunnelsModel
 
             var funnel = Funnel.New(this, store);
 
-            _cache.AddInstance(funnel, store);
+            _cache.Store(funnel, store);
 
             return funnel;
         }
@@ -184,7 +184,7 @@ namespace L4p.Common.FunnelsModel
 
         void IFunnelsManagerEx.CleanDeadFunnels()
         {
-            var stores = _cache.GetDeadInstances(_config.Config.Client.FunnelStoreTtlSpan);
+            var stores = _cache.GetDeadBodies(_config.Config.Client.FunnelStoreTtlSpan);
 
             if (stores != null)
             foreach (var store in stores)

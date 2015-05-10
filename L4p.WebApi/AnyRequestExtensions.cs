@@ -60,7 +60,7 @@ namespace L4p.WebApi
                 "field should be set '{0}'", get_getter_name(getter));
         }
 
-        public void if_null(string value, Expression<Func<string>> getter)
+        public void if_empty(string value, Expression<Func<string>> getter)
         {
             if (value.IsNotEmpty())
                 return;

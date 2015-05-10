@@ -1,9 +1,9 @@
-namespace L4p.Common.GcAwareTtlCaches
+namespace L4p.Common.TtlCaches
 {
     interface IReferenceCounter
     {
-        void LinkInstance();
-        void ReleaseInstance();
+        void LinkBody();
+        void ReleaseBody();
     }
 
     class DeathNotifier
@@ -25,7 +25,7 @@ namespace L4p.Common.GcAwareTtlCaches
             var reference = _reference;
 
             if (reference != null)
-                reference.ReleaseInstance();
+                reference.ReleaseBody();
         }
     }
 }
