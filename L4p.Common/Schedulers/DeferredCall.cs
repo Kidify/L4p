@@ -35,7 +35,9 @@ namespace L4p.Common.Schedulers
 
         public static void Start(TimeSpan delay, Action action)
         {
-            Task.Factory.StartNew(() => call_timed_action(delay, action));
+            Task
+                .Delay(delay)
+                .ContinueWith(t => action());
         }
 
         private DeferredCall(Action action)
@@ -47,12 +49,6 @@ namespace L4p.Common.Schedulers
         #endregion
 
         #region private
-
-        private static void call_timed_action(TimeSpan delay, Action action)
-        {
-            Thread.Sleep(delay);
-            action();
-        }
 
         #endregion
 

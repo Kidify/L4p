@@ -8,7 +8,7 @@ namespace L4p.Common.PubSub.client.Io
 {
     interface IAgentConnector : IHaveDump
     {
-        IAgentWriter ConnectAgent(string agentUri, IMessangerEngine messanger);
+        IAgentWriter ConnectAgent(string agentUri, IMessengerEngine messenger);
         void DisconnectAgent(IAgentWriter proxy);
     }
 
@@ -53,11 +53,11 @@ namespace L4p.Common.PubSub.client.Io
 
         #region interface
 
-        IAgentWriter IAgentConnector.ConnectAgent(string agentUri, IMessangerEngine messanger)
+        IAgentWriter IAgentConnector.ConnectAgent(string agentUri, IMessengerEngine messenger)
         {
             int sequentialId = Interlocked.Increment(ref _sequentialId);
 
-            var proxy = AgentWriter.New(sequentialId, agentUri, messanger);
+            var proxy = AgentWriter.New(sequentialId, agentUri, messenger);
             Interlocked.Increment(ref _counters.AgentConnected);
 
             _log.Info("Agent at '{0}' is connected; sequentialId={1}", agentUri, sequentialId);

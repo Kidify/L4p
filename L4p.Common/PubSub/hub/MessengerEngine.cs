@@ -5,7 +5,7 @@ using L4p.Common.Loggers;
 
 namespace L4p.Common.PubSub.hub
 {
-    interface IMessangerEngine : IHaveDump
+    interface IMessengerEngine : IHaveDump
     {
         bool SendHelloMsg(string agentUri, string helloAgentUri, int snapshotId);
         bool SendGoodbyeMsg(string agentUri, string goodbyeAgentUri);
@@ -13,7 +13,7 @@ namespace L4p.Common.PubSub.hub
         void FilterTopicMsgs(string agentUri, comm.TopicFilterMsg msg);
     }
 
-    class MessangerEngine : IMessangerEngine
+    class MessengerEngine : IMessengerEngine
     {
         #region members
 
@@ -23,13 +23,13 @@ namespace L4p.Common.PubSub.hub
 
         #region construction
 
-        public static IMessangerEngine New(ILogFile log)
+        public static IMessengerEngine New(ILogFile log)
         {
             return
-                new MessangerEngine(log);
+                new MessengerEngine(log);
         }
 
-        private MessangerEngine(ILogFile log)
+        private MessengerEngine(ILogFile log)
         {
             _log = log;
         }
@@ -62,7 +62,7 @@ namespace L4p.Common.PubSub.hub
 
         #region interface
 
-        bool IMessangerEngine.SendHelloMsg(string agentUri, string helloAgentUri, int snapshotId)
+        bool IMessengerEngine.SendHelloMsg(string agentUri, string helloAgentUri, int snapshotId)
         {
             using (var client = create_client_proxy(agentUri))
             {
@@ -71,7 +71,7 @@ namespace L4p.Common.PubSub.hub
             }
         }
 
-        bool IMessangerEngine.SendGoodbyeMsg(string agentUri, string goodbyeAgentUri)
+        bool IMessengerEngine.SendGoodbyeMsg(string agentUri, string goodbyeAgentUri)
         {
             using (var client = create_client_proxy(agentUri))
             {
@@ -80,7 +80,7 @@ namespace L4p.Common.PubSub.hub
             }
         }
 
-        bool IMessangerEngine.ClearAgentsList(string agentUri)
+        bool IMessengerEngine.ClearAgentsList(string agentUri)
         {
             using (var client = create_client_proxy(agentUri))
             {
@@ -89,7 +89,7 @@ namespace L4p.Common.PubSub.hub
             }
         }
 
-        void IMessangerEngine.FilterTopicMsgs(string agentUri, comm.TopicFilterMsg msg)
+        void IMessengerEngine.FilterTopicMsgs(string agentUri, comm.TopicFilterMsg msg)
         {
             using (var client = create_client_proxy(agentUri))
             {

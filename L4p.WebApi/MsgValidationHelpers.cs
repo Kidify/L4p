@@ -4,7 +4,7 @@ using L4p.Common.Extensions;
 
 namespace L4p.WebApi
 {
-    public class MsgValidationHelpers
+    public class MsgValidationHelpers : BlBaseController
     {
         protected static string get_getter_name(Expression getter)
         {

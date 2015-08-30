@@ -222,7 +222,9 @@ namespace L4p.Common.DumpToLogs
             if (dump.IsEmpty())
                 return;
 
-            info.Log.Info(dump);
+            var dumps = info.Dumps ?? new DumpFunc[0];
+
+            info.Log.Info("Dump of '{0}' ({1} dumps) \r\n{2}", componentName, dumps.Length, dump);
 
             Interlocked.Increment(ref _counters.DumpsDone);
         }

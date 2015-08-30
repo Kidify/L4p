@@ -16,7 +16,7 @@ namespace L4p.Common.PubSub.client
 {
     interface IRemoteDispatcher : IHaveDump
     {
-        void DispatchRemoteMsg(Topic topic, object msg);
+        bool DispatchRemoteMsg(Topic topic, object msg);
         bool FilterTopicMsgs(string target, comm.TopicFilterMsg msg);
     }
 
@@ -40,7 +40,7 @@ namespace L4p.Common.PubSub.client
         private readonly ILogFile _log;
         private readonly IJsonEngine _json;
         private readonly IRemoteRepo _rrepo;
-        private readonly IMessangerEngine _messanger;
+        private readonly IMessengerEngine _messenger;
 
         #endregion
 
@@ -59,7 +59,7 @@ namespace L4p.Common.PubSub.client
             _log = ioc.Resolve<ILogFile>();
             _json = ioc.Resolve<IJsonEngine>();
             _rrepo = ioc.Resolve<IRemoteRepo>();
-            _messanger = ioc.Resolve<IMessangerEngine>();
+            _messenger = ioc.Resolve<IMessengerEngine>();
         }
 
         #endregion
@@ -131,29 +131,30 @@ namespace L4p.Common.PubSub.client
 
         private void dispatch_to_remote(string agent, Topic topic, string json)
         {
-            var msg = new comm.PublishMsg
-                {
-                    TopicName = topic.Name,
-                    TopicGuid = topic.Guid,
-                    Json = json,
-                    FromAgent = _myself
-                };
+            var msg = new comm.PublishMsg {
+                Topic = topic,
+                TopicName = topic.Name,
+                TopicGuid = topic.Guid,
+                Json = json,
+                FromAgent = _myself
+            };
 
-            _messanger.SendPublishMsg(agent, msg);
+            _messenger.SendPublishMsg(agent, msg);
         }
 
         #endregion
 
         #region interface
 
-        void IRemoteDispatcher.DispatchRemoteMsg(Topic topic, object msg)
+        bool IRemoteDispatcher.DispatchRemoteMsg(Topic topic, object msg)
         {
             var agents = _rrepo.GetAgents();
 
             if (agents.IsEmpty())
-                return;
+                return false;
 
             var json = _json.MsgToJson(msg);
+            var hasListeners = false;
 
             foreach (var agent in agents)
             {
@@ -165,14 +166,18 @@ namespace L4p.Common.PubSub.client
                     continue;
                 }
 
+                hasListeners = true;
+
                 dispatch_to_remote(agent.AgentUri, topic, json);
                 Interlocked.Increment(ref _counters.MsgsDispatched);
             }
+
+            return hasListeners;
         }
 
         bool IRemoteDispatcher.FilterTopicMsgs(string target, comm.TopicFilterMsg msg)
         {
-            _messanger.FilterTopicMsgs(target, msg);
+            _messenger.FilterTopicMsgs(target, msg);
             Interlocked.Increment(ref _counters.FilterTopicMsgsSent);
             return true;
         }

@@ -47,7 +47,7 @@ namespace L4p.Common.PubSub.hub
         private readonly ILogFile _log;
         private readonly ISignalsConfigRa _configRa;
         private readonly IHubRepo _repo;
-        private readonly IMessangerEngine _messanger;
+        private readonly IMessengerEngine _messenger;
         private readonly IAgentsEngine _agents;
         private readonly IWcfHost _host;
         private readonly IIdler _idler;
@@ -76,13 +76,13 @@ namespace L4p.Common.PubSub.hub
             var scheduler = EventScheduler.New(log);
 
             var throttledLog = ThrottledLog.NewSync(config.ThrottledLogTtl, log);
-            var messanger = MessangerEngine.New(throttledLog);
+            var messenger = MessengerEngine.New(throttledLog);
 
             ioc.Setup()
                 .Register(log)
                 .Register(configRa)
                 .Register(repo)
-                .Register(messanger)
+                .Register(messenger)
                 .Register(idler)
                 .Register(scheduler);
 
@@ -102,7 +102,7 @@ namespace L4p.Common.PubSub.hub
             _log = ioc.Resolve<ILogFile>();
             _repo = ioc.Resolve<IHubRepo>();
             _configRa = ioc.Resolve<ISignalsConfigRa>();
-            _messanger = ioc.Resolve<IMessangerEngine>();
+            _messenger = ioc.Resolve<IMessengerEngine>();
             _agents = ioc.Resolve<IAgentsEngine>();
             _idler = ioc.Resolve<IIdler>();
             _scheduler = ioc.Resolve<IEventScheduler>();
@@ -146,7 +146,7 @@ namespace L4p.Common.PubSub.hub
                 return;
 
             Interlocked.Increment(ref _counters.NewAgents);
-            _messanger.ClearAgentsList(agent.AgentUri);
+            _messenger.ClearAgentsList(agent.AgentUri);
 
             agent.ClearAgentsListIsCompleted = 1;
         }
@@ -254,7 +254,6 @@ namespace L4p.Common.PubSub.hub
             root.Counters = _counters;
             root.Config = _configRa.Values;
             root.Repo = _repo.Dump();
-//            root.Messanger = _messanger.Dump();
 
             Interlocked.Increment(ref _counters.Dumps);
 

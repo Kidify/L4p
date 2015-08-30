@@ -10,8 +10,16 @@ namespace L4p.WebApi
 {
     public interface IBlController
     {
-        void RegisterRoutes(IHttpServer server);
+        string Name { get; }
+        void Initialize(IHttpServer server);
         void ProcessRequest(RouteHandler handler, HttpContext http);
+        void Shut();
+    }
+
+    public class BlBaseController
+    {
+        public string Name { get { return GetType().Name; } }
+        public void Shut() {}
     }
 
     public abstract class BlController : IBlController
@@ -162,9 +170,13 @@ namespace L4p.WebApi
             }
         }
 
-        void IBlController.RegisterRoutes(IHttpServer server)
+        #region interface
+
+        string IBlController.Name { get { return Name; } }
+
+        void IBlController.Initialize(IHttpServer server)
         {
-            RegisterRoutes(server);
+            Initialize(server);
         }
 
         void IBlController.ProcessRequest(RouteHandler handler, HttpContext http)
@@ -179,7 +191,22 @@ namespace L4p.WebApi
             }
         }
 
-        protected abstract void RegisterRoutes(IHttpServer server);
+        void IBlController.Shut()
+        {
+            Shut();
+        }
+
+        protected virtual string Name
+        {
+            get { return GetType().Name; }
+        }
+
+        protected abstract void Initialize(IHttpServer server);
         protected abstract ILogFile Log { get; }
+
+        protected virtual void Start() {}
+        protected virtual void Shut() {}
+
+        #endregion
     }
 }

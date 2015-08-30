@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Dynamic;
 using System.IO;
 using System.Net.Sockets;
+using L4p.Common.DumpToLogs;
 using L4p.Common.Extensions;
 using L4p.Common.Helpers;
 using L4p.Common.Loggers;
 
 namespace L4p.Common.Tcp
 {
-    public interface ILineStreamReader : IDisposable
+    public interface ILineStreamReader : IDisposable, IHaveDump
     {
         string ReadLine();
         void CloseConnection();
@@ -15,8 +17,19 @@ namespace L4p.Common.Tcp
 
     public class LineStreamReader : ILineStreamReader
     {
+        #region counters
+
+        class Counters
+        {
+            public long Lines;
+            public long EmptyLines;
+        }
+
+        #endregion
+
         #region members
 
+        private readonly Counters _counters;
         private readonly ILogFile _log;
         private readonly string _host;
         private readonly int _port;
@@ -58,6 +71,7 @@ namespace L4p.Common.Tcp
 
         private LineStreamReader(string host, int port, ILogFile log, TimeSpan? receiveTimeout)
         {
+            _counters = new Counters();
             _log = log;
             _host = host;
             _port = port;
@@ -111,6 +125,8 @@ namespace L4p.Common.Tcp
                 () => _tcp.ReadLine(),
                 ex => _log.Info("Tcp client is disconnected '{0}'; {1}", _info, ex.Message));
 
+            _counters.Lines++;
+
             return line;
         }
 
@@ -128,7 +144,10 @@ namespace L4p.Common.Tcp
                 }
 
                 if (String.IsNullOrWhiteSpace(line))
+                {
+                    _counters.EmptyLines++;
                     continue;
+                }
 
                 return line;
             }
@@ -136,11 +155,24 @@ namespace L4p.Common.Tcp
 
         #endregion
 
-        #region ILineStreamReader
+        #region interface
 
         void IDisposable.Dispose()
         {
             close_connection();
+        }
+
+        ExpandoObject IHaveDump.Dump(dynamic root)
+        {
+            if (root == null)
+                root = new ExpandoObject();
+
+            root.Target = "{0}:{1}".Fmt(_host, _port);
+            root.ReceiveTimeout = _receiveTimeout;
+            root.Info = _info;
+            root.Counters = _counters;
+
+            return root;
         }
 
         string ILineStreamReader.ReadLine()

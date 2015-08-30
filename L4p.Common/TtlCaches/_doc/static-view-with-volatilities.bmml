@@ -1,4 +1,4 @@
-<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="645" measuredH="491" mockupW="627" mockupH="479">
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="596" measuredH="491" mockupW="578" mockupH="479">
   <controls>
     <control controlID="0" controlTypeID="com.balsamiq.mockups::TextArea" x="217" y="141" w="105" h="40" measuredW="200" measuredH="140" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
@@ -32,12 +32,12 @@
         <verticalScrollbar>false</verticalScrollbar>
       </controlProperties>
     </control>
-    <control controlID="4" controlTypeID="com.balsamiq.mockups::HRule" x="18" y="67" w="627" h="-1" measuredW="100" measuredH="10" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::HRule" x="18" y="67" w="578" h="-1" measuredW="100" measuredH="10" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <stroke>dashed</stroke>
       </controlProperties>
     </control>
-    <control controlID="5" controlTypeID="com.balsamiq.mockups::HRule" x="18" y="406" w="624" h="-1" measuredW="100" measuredH="10" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::HRule" x="18" y="406" w="578" h="-1" measuredW="100" measuredH="10" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <stroke>dashed</stroke>
       </controlProperties>

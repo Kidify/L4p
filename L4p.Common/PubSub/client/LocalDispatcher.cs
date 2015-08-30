@@ -11,7 +11,7 @@ namespace L4p.Common.PubSub.client
 {
     interface ILocalDispatcher : IHaveDump
     {
-        void DispatchLocalMsg(Topic topic, object msg);
+        bool DispatchLocalMsg(Topic topic, object msg);
         bool DispatchRemoteMsg(object msg, HandlerInfo[] handlers);
     }
 
@@ -120,7 +120,7 @@ namespace L4p.Common.PubSub.client
 
         #region interface
 
-        void ILocalDispatcher.DispatchLocalMsg(Topic topic, object msg)
+        bool ILocalDispatcher.DispatchLocalMsg(Topic topic, object msg)
         {
             int snapshotId;
             var handlers = _lrepo.GetHandlers(topic.Guid, out snapshotId);
@@ -130,6 +130,8 @@ namespace L4p.Common.PubSub.client
 
             if (hasListeners)
                 Interlocked.Increment(ref _counters.LocalMsgsDispatched);
+
+            return hasListeners;
         }
 
         bool ILocalDispatcher.DispatchRemoteMsg(object msg, HandlerInfo[] handlers)

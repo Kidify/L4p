@@ -1,11 +1,13 @@
 ﻿using System;
+using L4p.Common.Helpers;
 using L4p.Common.Loggers;
 
 namespace L4p.WebApi
 {
     public interface IBlcBox
     {
-        void RegisterRoutes(IHttpServer server);
+        void Initialize(IHttpServer server);
+        void Shut();
     }
 
     public interface IBlcBox<T> : IBlcBox
@@ -55,7 +57,7 @@ namespace L4p.WebApi
 
         #region interface
 
-        void IBlcBox.RegisterRoutes(IHttpServer server)
+        void IBlcBox.Initialize(IHttpServer server)
         {
             if (_controller == null)
             {
@@ -65,13 +67,23 @@ namespace L4p.WebApi
 
             try
             {
-                _controller.RegisterRoutes(server);
+                _controller.Initialize(server);
                 _log.Info("Routes of controller '{0}' are registered", _controllerName);
             }
             catch (Exception ex)
             {
                 _log.Error(ex, "Failed to register routes of controller '{0}'", _controllerName);
             }
+        }
+
+        void IBlcBox.Shut()
+        {
+            if (_controller == null)
+                return;
+
+            Try.Catch.Handle(
+                () => _controller.Shut(),
+                ex => _log.Error(ex, "Failed to shut controller '{0}'", _controllerName));
         }
 
         #endregion

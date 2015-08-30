@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using L4p.Common.DumpToLogs;
+using L4p.Common.Extensions;
 using L4p.Common.Helpers;
 using L4p.Common.PubSub.utils;
 
@@ -113,33 +114,17 @@ namespace L4p.Common.PubSub.client
             if (root == null)
                 root = new ExpandoObject();
 
+            var topics =
+                from handler in _handlers
+                let topic = handler.Topic
+                let hasFilter = handler.Filter != null ? "has filter" : "no filter"
+                orderby topic.Name
+                select "'{0}' '{1}' ({2}) '{3}'".Fmt(
+                    topic.Name, hasFilter, topic.Type.FullName, topic.Guid);
+
             root.SnapshotId = _snapshotId;
-            var details = new List<object>();
-
-            foreach (var handler in _handlers)
-            {
-                var topic = new
-                    {
-                        handler.Topic.Name,
-                        handler.Topic.Guid,
-                        handler.Topic.Type.FullName
-                    };
-
-                var detail = new
-                    {
-                        Topic = topic,
-                        Action = handler.Call.Method.Name,
-                        HasFilter = handler.Filter != null
-                    };
-
-                details.Add(detail);
-            }
-
-            root.Locals = new
-                {
-                    Count = details.Count,
-                    Topics = details.ToArray()
-                };
+            root.Count = _handlers.Count;
+            root.Topics = topics.ToArray();
 
             return root;
         }

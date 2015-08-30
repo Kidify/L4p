@@ -11,7 +11,7 @@ namespace L4p.WebApi
 {
     public delegate void ModuleEntryPoint(IWebApiController controller);
     public delegate RequestConfig MakeRequestConfigHandler(HttpContext http);
-    public delegate IBusinessLogicModule ModuleFactory(string moduleName, ILogFile log);
+    public delegate IBlController ModuleFactory(string moduleName, ILogFile log);
     
     public interface IWebApiController
     {
@@ -30,7 +30,7 @@ namespace L4p.WebApi
         private readonly IRouteRepository _routes;
         private readonly MakeRequestConfigHandler _makeRequestConfig;
         private readonly ILogFile _log;
-        private readonly List<IBusinessLogicModule> _modules;
+        private readonly List<IBlController> _modules;
 
         private string _initializationFailureMsg;
 
@@ -49,7 +49,7 @@ namespace L4p.WebApi
             _routes = RouteRepository.New();
             _makeRequestConfig = makeRequestConfig;
             _log = LogFile.New("web_api_controller.log");
-            _modules = new List<IBusinessLogicModule>();
+            _modules = new List<IBlController>();
         }
 
         #endregion
@@ -158,7 +158,6 @@ namespace L4p.WebApi
                 _modules.Add(module);
 
                 module.Initialize(this);
-                module.RegisterRoutes(this);
 
                 _log.Info("'{0}': initialization is completed", name);
             }
@@ -215,11 +214,11 @@ namespace L4p.WebApi
             return route;
         }
 
-        void IHttpServer.ConfigureThrottling(IBusinessLogicModule listener, ThrottlingConfig config)
+        void IHttpServer.ConfigureThrottling(IBlController listener, ThrottlingConfig config)
         {
         }
 
-        void IHttpServer.SetWhiteIpList(IBusinessLogicModule listener, IpList list)
+        void IHttpServer.SetWhiteIpList(IBlController listener, IpList list)
         {
         }
 

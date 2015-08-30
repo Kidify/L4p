@@ -44,8 +44,9 @@ namespace L4p.Common.PubSub.client
             public int HelloMsgSent;
             public int GoodbyeMsgSent;
             public int PublishedMsgs;
-            public int Subscribtions;
-            public int SubscribtionsWithFilters;
+            public int PublishedMsgNoListeners;
+            public int Subscriptions;
+            public int SubscriptionsWithFilters;
             public int WholeTopicIsFiltered;
             public int FiltersAreSet;
             public int NoFiltersAreSet;
@@ -67,7 +68,7 @@ namespace L4p.Common.PubSub.client
         private readonly IRemoteDispatcher _remotes;
         private readonly IHeloPulseBeat _pulse;
         private readonly ISignalsAgent _agent;
-        private readonly IMessangerEngine _messanger;
+        private readonly IMessengerEngine _messenger;
         private readonly IJsonEngine _json;
         private readonly ILocalFactory _factory;
         private readonly IEventScheduler _scheduler;
@@ -106,12 +107,12 @@ namespace L4p.Common.PubSub.client
             ioc.SingleInstance(TopicsRepo.NewSync);
             ioc.SingleInstance(JsonEngine.New);
             ioc.SingleInstance(AgentConnector.New);
-            ioc.SingleInstance(MessangerEngine.New);
+            ioc.SingleInstance(MessengerEngine.New);
             ioc.SingleInstance(LocalDispatcher.New);
             ioc.SingleInstance(() => RemoteDispatcher.New(myAgent.AgentUri, ioc));
             ioc.SingleInstance(() => HelloPulseBeat.New(ioc));
             ioc.SingleInstance(() => myAgent);
-            ioc.SingleInstance(MessangerEngine.New);
+            ioc.SingleInstance(MessengerEngine.New);
             ioc.SingleInstance(LocalFactory.New);
             ioc.SingleInstance(() => EventScheduler.New(log));
             ioc.SingleInstance(SessionContext.New);
@@ -135,7 +136,7 @@ namespace L4p.Common.PubSub.client
             _remotes = ioc.Resolve<IRemoteDispatcher>();
             _pulse = ioc.Resolve<IHeloPulseBeat>();
             _agent = ioc.Resolve<ISignalsAgent>();
-            _messanger = ioc.Resolve<IMessangerEngine>();
+            _messenger = ioc.Resolve<IMessengerEngine>();
             _json = ioc.Resolve<IJsonEngine>();
             _factory = ioc.Resolve<ILocalFactory>();
             _scheduler = ioc.Resolve<IEventScheduler>();
@@ -166,14 +167,14 @@ namespace L4p.Common.PubSub.client
                     SequentialId = sequentialId
                 };
 
-            _messanger.SendHelloMsg(msg);
+            _messenger.SendHelloMsg(msg);
             Interlocked.Increment(ref _counters.HelloMsgSent);
         }
 
         private void generate_goodbye_msg()
         {
             var agentUri = _agent.AgentUri;
-            _messanger.SendGoodbyeMsg(agentUri);
+            _messenger.SendGoodbyeMsg(agentUri);
 
             Interlocked.Increment(ref _counters.GoodbyeMsgSent);
         }
@@ -210,7 +211,7 @@ namespace L4p.Common.PubSub.client
                 
             if (filterMsg == null)
             {
-                Interlocked.Increment(ref topicDetails.Counters.FiledToBuildFilterTopicMsg);
+                Interlocked.Increment(ref topicDetails.Counters.FailedToBuildFilterTopicMsg);
                 return;
             }
 
@@ -241,12 +242,12 @@ namespace L4p.Common.PubSub.client
             var slot = SignalSlot.New(this, handler);
             say_deferred_hello();
 
-            Interlocked.Increment(ref _counters.Subscribtions);
+            Interlocked.Increment(ref _counters.Subscriptions);
 
             if (filter != null)
             {
                 Interlocked.Increment(ref topic.Details.Counters.Filters);
-                Interlocked.Increment(ref _counters.SubscribtionsWithFilters);
+                Interlocked.Increment(ref _counters.SubscriptionsWithFilters);
             }
 
             _log.Info("Topic '{0}': ({1}) is subscribed to", topic.Name, topic.Guid);
@@ -263,10 +264,19 @@ namespace L4p.Common.PubSub.client
             _log.Trace("Topic '{0}': []--> from '{1}'", topic.Name, _agent.AgentUri);
             Interlocked.Increment(ref topic.Details.Counters.MsgPublished);
 
-            _locals.DispatchLocalMsg(topic, msg);
-            _remotes.DispatchRemoteMsg(topic, msg);
+            var hasLocalListeners = _locals.DispatchLocalMsg(topic, msg);
+            var hasRemoteListeners = _remotes.DispatchRemoteMsg(topic, msg);
+
+            var hasListeners = 
+                hasLocalListeners || hasRemoteListeners;
 
             Interlocked.Increment(ref _counters.PublishedMsgs);
+
+            if (hasListeners == false)
+            {
+                Interlocked.Increment(ref _counters.PublishedMsgNoListeners);
+                Interlocked.Increment(ref topic.Details.Counters.SkippedNoListenersFound);
+            }
         }
 
         ISessionContext ISignalsManager.Context 
@@ -326,7 +336,7 @@ namespace L4p.Common.PubSub.client
             root.RRepo = _rrepo.Dump();
             root.LocalDispatcher = _locals.Dump();
             root.RemoteDispatcher = _remotes.Dump();
-            root.Messanger = _messanger.Dump();
+            root.Messenger = _messenger.Dump();
             root.PulseBeat = _pulse.Dump();
             root.LocalFactory = _factory.Dump();
             root.FiltersEngine = _filters.Dump();
@@ -345,7 +355,7 @@ namespace L4p.Common.PubSub.client
             Interlocked.Increment(ref _counters.GotHelloMsg);
 
             _rrepo.SetSnapshotId(agent, snapshotId);
-            _messanger.AgentIsHere(agent);
+            _messenger.AgentIsHere(agent);
         }
 
         void ISignalsManagerEx.GotGoodbyeMsg(SignalsAgent asFriend, string agent)
@@ -357,7 +367,7 @@ namespace L4p.Common.PubSub.client
             Interlocked.Increment(ref _counters.GotGoodbyeMsg);
 
             _rrepo.RemoveAgent(agent);
-            _messanger.AgentIsGone(agent);
+            _messenger.AgentIsGone(agent);
         }
 
         void ISignalsManagerEx.GotPublishMsg(SignalsAgent asFriend, comm.PublishMsg pmsg)
@@ -366,7 +376,7 @@ namespace L4p.Common.PubSub.client
             Interlocked.Increment(ref _counters.GotPublishMsg);
 
             var topicDetails = _topics.GetTopicDetails(pmsg.TopicGuid, pmsg.TopicName);
-            Interlocked.Increment(ref topicDetails.Counters.MsgGotPublished);
+            Interlocked.Increment(ref topicDetails.Counters.GotPublishedMsg);
 
             int snapshotId;
             var handlers = _lrepo.GetHandlers(pmsg.TopicGuid, out snapshotId);
@@ -435,7 +445,7 @@ namespace L4p.Common.PubSub.client
 
             _log.Trace("Topic '{0}': subscription is canceled", handler.Topic.Name);
 
-            Interlocked.Decrement(ref _counters.Subscribtions);
+            Interlocked.Decrement(ref _counters.Subscriptions);
             say_deferred_hello();
         }
 
@@ -449,7 +459,7 @@ namespace L4p.Common.PubSub.client
 
         void ISignalsManagerEx.Idle(SignalsManagerEx asFriend)
         {
-            _messanger.Idle();
+            _messenger.Idle();
         }
 
         #endregion

@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using L4p.Common.DumpToLogs;
+using L4p.Common.Extensions;
+using L4p.Common.Json;
 
 namespace L4p.Common.PubSub.client
 {
     class TopicCounters
     {
-        public int Handlers;
-        public int Filters;
-        public int MsgPublished;
-        public int MsgGotPublished;
-        public int NoHandlersFound;
-        public int MsgDispatched;
-        public int FiledToBuildFilterTopicMsg;
+        public long MsgPublished;
+        public long GotPublishedMsg;
+        public long SkippedNoListenersFound;
+        public long IoFailed;
+        public long MsgNotSent;
+        public long Handlers;
+        public long Filters;
+        public long NoHandlersFound;
+        public long MsgDispatched;
+        public long FailedToBuildFilterTopicMsg;
     }
 
     class TopicDetails
@@ -86,8 +91,25 @@ namespace L4p.Common.PubSub.client
             if (root == null)
                 root = new ExpandoObject();
 
+            var details =
+                from topic in _topics.Values
+                orderby topic.TopicName
+                let counters = topic.Counters
+                select "'{0}': published={1} got={2} skipped={3} ioFailed={4} notSent={5} handlers={6} filters={7} handlerNotFound={8} dispatched={9} FailedToBuildFilterTopicMsg={10}".Fmt(
+                    topic.TopicName,
+                    counters.MsgPublished,
+                    counters.GotPublishedMsg,
+                    counters.SkippedNoListenersFound,
+                    counters.IoFailed,
+                    counters.MsgNotSent,
+                    counters.Handlers,
+                    counters.Filters,
+                    counters.NoHandlersFound,
+                    counters.MsgDispatched,
+                    counters.FailedToBuildFilterTopicMsg);
+
             root.Count = _topics.Count;
-            root.Details = _topics.Values.ToArray();
+            root.Details = details.ToArray();
 
             return root;
         }

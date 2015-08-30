@@ -4,9 +4,9 @@
 In this article we will explore the hidden power of this communication.
 
 **Disclaimer:**
-This article is my personal exercise of the [IDesign](http://idesign.net/Training/Architect-Master-Class) way of thinking, i.e. the volatility way of thinking.
+This article is my personal exercise on the [IDesign](http://idesign.net/Training/Architect-Master-Class) way of thinking, i.e. the volatility way of thinking.
 
-## Why and What
+## What and Why
 
 Let's imagine a system with clients talking to peers. Each message from a client to a peer requires a connection.
 Establishing a connection is a heavy operation. We want to cache open connections.
@@ -15,12 +15,13 @@ A connection should be closed a while after all the messages of this specific co
 Here is a typical use case
 
 - Look for a cached connection to the peer
-- if a cached connection does not exist
-    - open connection and store it to the cache
-- use the connection to send a message to the peer
+- If a cached connection does not exist
+    - Open connection and store it in a cache
+- Use the connection to send a message to the peer
 
-It is not that easy to implement. To cache a connection we have to store it in a data structure, preventing it from been garbage collected. So, we will need to maintain a reference counter per connection ourselves.
-To do this, we will have to expose the Get/Release methods, that will be consumed by `using` directive with a `IDisposable` guard. 
+However, it is not that easy to implement. To cache a connection we have to store it in a data structure, what is preventing it from been garbage collected. 
+Thus we will need to maintain a reference counter per connection ourselves.
+To do this, we will have to expose the `Get`/`Release` methods, that will be consumed by a `using` directive with a `IDisposable` guard. 
 The situation even worse if a message travels across multiple threads, since the `using` directive can't help us with threads.
 
 Implementing all of the above just does not feel right. It feels like we are reinventing the garbage collector.
@@ -29,6 +30,18 @@ Can't we just use the garbage collector .Net provides us?
 So here is our goal: a GC aware time-to-live cache.
 
 ## Design
+
+### Interface
+
+```C#
+public interface ITtlCache<TFacet, TBody>
+    where TFacet : class
+    where TBody : class
+{
+    void Store(TFacet facet, TBody body);
+    TBody[] GetDeadBodies(TimeSpan ttl);
+}
+```
 
 ### Volatilities
 
@@ -51,6 +64,12 @@ Let's list the volatilities that such a cache should encapsulate:
 - **Reference counting**
   - It is obvious that there is some reference counting mechanism in the cache. It should be encapsulated.
 
+There is another volatility that might have been encapsulated. This is the race condition of `Store()` and `GetDeadBodies()`.
+But after thinking about it, I was finally convinced that this volatility belongs to a outer scope of a time-to-live cache.
+
+
+### Components static view
+
 Here is the static view of the `TtlCache` ingredients (participants). The encapsulated volatilities are listed near each participant.
 
 ---
@@ -67,19 +86,6 @@ Methods of the `TtlCache` are thread safe and can be called within an arbitrary 
 
 ---
 ![](threads-view.png)
-
-
-### Interface
-
-```C#
-public interface ITtlCache<TFacet, TBody>
-    where TFacet : class
-    where TBody : class
-{
-    void Store(TFacet facet, TBody body);
-    TBody[] GetDeadbodies(TimeSpan ttl);
-}
-```
 
 
 ## Usage example
@@ -139,7 +145,7 @@ class DeathNotifier
 }
 ```
 
-Any given object is wrapped by an internal `TtlItem` that implements two interface `ITtlItem<TBody>` and `IReferenceCounter`.
+Any given object is wrapped by an internal `TtlItem` that implements two interfaces `ITtlItem<TBody>` and `IReferenceCounter`.
 
 ```C#
 interface ITtlItem<TBody>
@@ -194,10 +200,10 @@ class TtlItem<TBody> : ITtlItem<TBody>, IReferenceCounter
 
 ## Summary
 
-As we said before the main purpose of the `TtlCache` is encapsulating garbage collector and time-to-live concerns.
+As we said before the main purpose of the `TtlCache` is encapsulating of the garbage collector and time-to-live concerns.
 
 With the `TtlCache` you are free to implement your own cache component according to any logic required by your design.
-The `TtlCache` provides you with garbage collector communication. You just add pairs of facet-to-body into it and ask when bodies may be disposed.
+The `TtlCache` provides you with garbage collector communication. You just add pairs of facet-to-body to it and ask when the bodies may be disposed.
 This way you are free to implement the clean-up logic the way you prefer. It may be an asynchronous periodically scheduled task, 
 or a synchronous maintenance each time a connection is created. 
 

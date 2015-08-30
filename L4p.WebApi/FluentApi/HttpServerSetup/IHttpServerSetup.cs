@@ -21,7 +21,7 @@
 
     public interface IMapRoute
     {
-        IRequestSpecifier MapTo(IBusinessLogicModule listener, RouteHandler handler);
+        IRequestSpecifier MapTo(IBlController listener, RouteHandler handler);
     }
 
     public interface IHttpServerSetup

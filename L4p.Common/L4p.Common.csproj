@@ -83,6 +83,10 @@
     <Compile Include="Agers\Ager.cs" />
     <Compile Include="Agers\_nunit\AgerTests.cs" />
     <Compile Include="BadInputException.cs" />
+    <Compile Include="ConfigurationFiles\ConfigRa2.cs" />
+    <Compile Include="ConfigurationFiles\ConfigRaComponent.cs" />
+    <Compile Include="ConfigurationFiles\CraManager.cs" />
+    <Compile Include="ConfigurationFiles\CraRepo.cs" />
     <Compile Include="DumpToLogs\DumpManager.cs" />
     <Compile Include="DumpToLogs\DumpComponent.cs" />
     <Compile Include="DumpToLogs\IAmAComponent.cs" />
@@ -118,6 +122,9 @@
     <Compile Include="PubSub\SignalsComponent.cs" />
     <Compile Include="PubSub\_nunit\TypeGames.cs" />
     <Compile Include="Schedulers\DeferredCall.cs" />
+    <Compile Include="Schedulers\CallSequence.cs" />
+    <Compile Include="Schedulers\_nunit\DeferredCallTests.cs" />
+    <Compile Include="Schedulers\_nunit\CallSequenceTests.cs" />
     <Compile Include="Schedulers\_nunit\IdlerTests.cs" />
     <Compile Include="ShouldNotGetHereException.cs" />
     <Compile Include="SystemEvents\IShouldRunOnSystemStart.cs" />
@@ -169,7 +176,7 @@
     <Compile Include="Loggers\ThrottledLog.cs" />
     <Compile Include="Loggers\_nunit\ThrottledLogTests.cs" />
     <Compile Include="Plugins\PluginOf.cs" />
-    <Compile Include="PubSub\client\MessangerEngine.cs" />
+    <Compile Include="PubSub\client\MessengerEngine.cs" />
     <Compile Include="PubSub\client\HelloPulseBeat.cs" />
     <Compile Include="PubSub\client\RemoteRepo.cs" />
     <Compile Include="PubSub\client\_nunit\PulseBeatTests.cs" />
@@ -236,7 +243,7 @@
     <Compile Include="PubSub\client\RemoteDispatcher.cs" />
     <Compile Include="PubSub\client\LocalRepo.cs" />
     <Compile Include="PubSub\hub\HubRepo.cs" />
-    <Compile Include="PubSub\hub\MessangerEngine.cs" />
+    <Compile Include="PubSub\hub\MessengerEngine.cs" />
     <Compile Include="PubSub\client\wcf\SignalsAgent.cs" />
     <Compile Include="PubSub\hub\wcf\SignalsAgent.cs" />
     <Compile Include="PubSub\hub\wcf\SignalsHub.cs" />

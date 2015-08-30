@@ -179,7 +179,22 @@ namespace L4p.Common.ActiveObjects
 
         protected R join<R>(TimeSpan timeout, Func<R> func)
         {
-            throw new NotImplementedException();
+            R result = default(R);
+
+            if (_thr.ItsMyThread())
+            {
+                _que.Push(() => result = func());
+                _que.Run();
+
+                return result;
+            }
+
+            var msg = ActionMsg.New(() => result = func());
+            push_action(msg.Run);
+
+            msg.Join(timeout);
+
+            return result;
         }
 
         #endregion

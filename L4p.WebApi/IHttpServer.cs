@@ -10,7 +10,7 @@ namespace L4p.WebApi
     {
         SingleRoute AddRoute(string path, IBlController controller, RouteHandler handler);
         SingleRoute AddRoute(string path, IBlController controller, AsyncRouteHandler handler);
-        void ConfigureThrottling(IBusinessLogicModule listener, ThrottlingConfig config);
-        void SetWhiteIpList(IBusinessLogicModule listener, IpList list);
+        void ConfigureThrottling(IBlController listener, ThrottlingConfig config);
+        void SetWhiteIpList(IBlController listener, IpList list);
     }
 }

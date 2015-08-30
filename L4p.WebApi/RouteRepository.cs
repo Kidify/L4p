@@ -8,6 +8,7 @@ namespace L4p.WebApi
 {
     public interface IRouteRepository
     {
+        int Count { get; }
         SingleRoute AddRoute(SingleRoute route);
         SingleRoute FindRoute(string path);
     }
@@ -124,7 +125,12 @@ namespace L4p.WebApi
 
         #endregion
 
-        #region IRouteRepository
+        #region interface
+
+        int IRouteRepository.Count
+        {
+            get { return _routes.Count; }
+        }
 
         SingleRoute IRouteRepository.AddRoute(SingleRoute route)
         {

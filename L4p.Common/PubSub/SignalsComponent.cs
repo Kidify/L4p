@@ -5,7 +5,7 @@ namespace L4p.Common.PubSub
     public class SignalsComponent : IAmAComponent
     {
         public static readonly string Name = "signals";
-        public static readonly string Version = "1.1.3.async-push";
+        public static readonly string Version = "1.2.0";
         public static readonly string LogName = "signals.log";
 
         string IAmAComponent.Name { get { return Name; } }

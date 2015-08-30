@@ -2,12 +2,14 @@ using System;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using System.ServiceModel;
+using L4p.Common.PubSub.client;
 
 namespace L4p.Common.PubSub.comm
 {
     [DataContract]
     class IoMsg
     {
+        [DataMember] public Guid Guid { get; set; }
         public string AgentUri { get; set; }
         public Action Retry { get; set; }
         public int RetryCount { get; set; }
@@ -16,6 +18,7 @@ namespace L4p.Common.PubSub.comm
     [DataContract]
     class PublishMsg : IoMsg
     {
+        public Topic Topic { get; set; }
         [DataMember] public string TopicName { get; set; }
         [DataMember] public Guid TopicGuid { get; set; }
         [DataMember] public string Json { get; set; }
@@ -65,7 +68,7 @@ namespace L4p.Common.PubSub.comm
         void Publish(PublishMsg msg);
 
         /// <summary>
-        /// ClearAgentsList() is triggered as a responce to a first Hello() message.
+        /// ClearAgentsList() is triggered as a response to a first Hello() message.
         /// It can't be one-way to prevent a race condition of consequent agent hello messages
         /// </summary>
         [OperationContract]

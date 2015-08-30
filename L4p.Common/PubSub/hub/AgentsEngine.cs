@@ -18,7 +18,7 @@ namespace L4p.Common.PubSub.hub
 
         private readonly ILogFile _log;
         private readonly IHubRepo _repo;
-        private readonly IMessangerEngine _messanger;
+        private readonly IMessengerEngine _messenger;
 
         #endregion
 
@@ -34,7 +34,7 @@ namespace L4p.Common.PubSub.hub
         {
             _log = ioc.Resolve<ILogFile>();
             _repo = ioc.Resolve<IHubRepo>();
-            _messanger = ioc.Resolve<IMessangerEngine>();
+            _messenger = ioc.Resolve<IMessengerEngine>();
         }
 
         #endregion
@@ -54,7 +54,7 @@ namespace L4p.Common.PubSub.hub
                 if (agent.ClearAgentsListIsCompleted == 0)
                     continue;
 
-                bool sent = _messanger.SendHelloMsg(agent.AgentUri, helloAgent.AgentUri, snapshotId);
+                bool sent = _messenger.SendHelloMsg(agent.AgentUri, helloAgent.AgentUri, snapshotId);
 
                 if (sent)
                     cleanAgents.Add(agent);
@@ -71,7 +71,7 @@ namespace L4p.Common.PubSub.hub
                 if (agent.AgentUri == goodbyeAgent)
                     continue;
 
-                _messanger.SendGoodbyeMsg(agent.AgentUri, goodbyeAgent);
+                _messenger.SendGoodbyeMsg(agent.AgentUri, goodbyeAgent);
             }
         }
 

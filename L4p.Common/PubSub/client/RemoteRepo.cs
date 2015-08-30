@@ -156,23 +156,21 @@ namespace L4p.Common.PubSub.client
                     var filtersCount = 
                         topic.FilterInfos.IsEmpty() ? 0 : topic.FilterInfos.Length;
 
-                    var entry = new
-                        {
-                            topic.TopicName,
-                            topic.TopicGuid,
-                            FiltersCount = filtersCount,
-                            Filters = topic.FilterInfos
-                        };
+                    var entry = new {
+                        topic.TopicName,
+                        topic.TopicGuid,
+                        FiltersCount = filtersCount,
+                        Filters = topic.FilterInfos
+                    };
 
                     topics.Add(entry);
                 }
 
-                var agent = new
-                    {
-                        remote.AgentUri,
-                        remote.SnapshotId,
-                        FilteredTopics = topics
-                    };
+                var agent = new {
+                    remote.AgentUri,
+                    remote.SnapshotId,
+                    FilteredTopics = topics
+                };
 
                 agents.Add(agent);
             }

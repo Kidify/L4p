@@ -68,7 +68,6 @@
     <Compile Include="FluentApi\HttpServerSetup\HttpServerSetter.cs" />
     <Compile Include="HandleAllRequests.cs" />
     <Compile Include="HttpHelpers.cs" />
-    <Compile Include="IBusinessLogicModule.cs" />
     <Compile Include="IHttpServer.cs" />
     <Compile Include="_nunit\HttpArgumentsTests.cs" />
     <Compile Include="_nunit\HttpHelpersTests.cs" />

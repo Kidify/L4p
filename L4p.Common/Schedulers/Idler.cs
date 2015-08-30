@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
 using System.Threading;
+using L4p.Common.DumpToLogs;
 using L4p.Common.Helpers;
 using L4p.Common.Extensions;
 using L4p.Common.InsightCounters;
@@ -8,7 +11,7 @@ using L4p.Common.Loggers;
 
 namespace L4p.Common.Schedulers
 {
-    public interface IIdler
+    public interface IIdler : IHaveDump
     {
         void Stop();
         void Idle(TimeSpan period, Action action);
@@ -152,6 +155,23 @@ namespace L4p.Common.Schedulers
         #endregion
 
         #region interface
+
+        ExpandoObject IHaveDump.Dump(dynamic root)
+        {
+            if (root == null)
+                root = new ExpandoObject();
+
+            var jobs = 
+                from job in _jobs
+                select "Period={0} mutex={1} [ok={2} err={3} skip={4}]".Fmt(
+                    job.Period, job.Mutex, job.SkippedExecutions, job.FailedExecutions, job.SkippedExecutions);
+
+            root.Config = _config;
+            root.Counters = _counters;
+            root.Jobs = jobs.ToArray();
+
+            return root;
+        }
 
         void IIdler.Stop()
         {

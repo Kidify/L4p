@@ -13,6 +13,7 @@ namespace L4p.Common.ConfigurationFiles
         T Read();
 
         string Path { get; }
+        string Name { get; }
     }
 
     public class ConfigFile<T> : IConfigFile<T>
@@ -35,6 +36,7 @@ namespace L4p.Common.ConfigurationFiles
         #region members
 
         private readonly string _path;
+        private readonly string _name;
         private readonly Config _config;
         private readonly ILogFile _log;
 
@@ -58,6 +60,7 @@ namespace L4p.Common.ConfigurationFiles
         private ConfigFile(string path, ILogFile log, Config config)
         {
             _path = path;
+            _name = Path.GetFileName(path);
             _config = config;
             _log = log;
             _loadedAt = DateTime.MinValue;
@@ -131,6 +134,11 @@ namespace L4p.Common.ConfigurationFiles
         string IConfigFile<T>.Path
         {
             get { return _path; }
+        }
+
+        string IConfigFile<T>.Name
+        {
+            get { return _name; }
         }
 
         #endregion

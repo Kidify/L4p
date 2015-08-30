@@ -26,9 +26,11 @@ namespace L4p.Common.PubSub.client.Io
 
         class Counters
         {
-            public int PublishMsgSent;
-            public int FilterTopicMsgSent;
-            public int HeartbeatMsgSent;
+            public long PublishCalled;
+            public long FilterTopicMsgSent;
+            public long HeartbeatMsgSent;
+            public long StartIoFailed;
+            public long EndIoFailed;
         }
 
         #endregion
@@ -38,26 +40,26 @@ namespace L4p.Common.PubSub.client.Io
         private readonly Counters _counters;
         private readonly string _agentUri;
         private readonly int _sequentialId;
-        private readonly IMessangerEngine _messanger;
+        private readonly IMessengerEngine _messenger;
         private readonly Stopwatch _tmFromLastMsg;
 
         #endregion
 
         #region construction
 
-        public static IAgentWriter New(int sequentialId, string agentUri, IMessangerEngine messanger)
+        public static IAgentWriter New(int sequentialId, string agentUri, IMessengerEngine messenger)
         {
             return
-                new AgentWriter(sequentialId, agentUri, messanger);
+                new AgentWriter(sequentialId, agentUri, messenger);
         }
 
-        private AgentWriter(int sequentialId, string agentUri, IMessangerEngine messanger)
+        private AgentWriter(int sequentialId, string agentUri, IMessengerEngine messenger)
             : base(agentUri)
         {
             _counters = new Counters();
             _agentUri = agentUri;
             _sequentialId = sequentialId;
-            _messanger = messanger;
+            _messenger = messenger;
             _tmFromLastMsg = Stopwatch.StartNew();
         }
 
@@ -73,7 +75,8 @@ namespace L4p.Common.PubSub.client.Io
             }
             catch (Exception ex)
             {
-                _messanger.IoFailed(this, msg, ex, "start_io");
+                Interlocked.Increment(ref _counters.StartIoFailed);
+                _messenger.IoFailed(this, msg, ex, "start_io");
             }
         }
 
@@ -85,7 +88,8 @@ namespace L4p.Common.PubSub.client.Io
             }
             catch (Exception ex)
             {
-                _messanger.IoFailed(this, msg, ex, "end_io");
+                Interlocked.Increment(ref _counters.EndIoFailed);
+                _messenger.IoFailed(this, msg, ex, "end_io");
             }
         }
 
@@ -94,6 +98,7 @@ namespace L4p.Common.PubSub.client.Io
         {
             Validate.NotNull(msg);
 
+            msg.Guid = Guid.NewGuid();
             msg.AgentUri = _agentUri;
 
             AsyncCallback cb = ar =>
@@ -120,7 +125,7 @@ namespace L4p.Common.PubSub.client.Io
 
         void IAgentWriter.Publish(comm.PublishMsg msg)
         {
-            Interlocked.Increment(ref _counters.PublishMsgSent);
+            Interlocked.Increment(ref _counters.PublishCalled);
 
             make_io(msg,
                 cb => Channel.BeginPublish(msg, cb, null),
@@ -156,8 +161,8 @@ namespace L4p.Common.PubSub.client.Io
             if (root == null)
                 root = new ExpandoObject();
 
-            root.SequentialId = _sequentialId;
             root.AgentUri = _agentUri;
+            root.SequentialId = _sequentialId;
             root.NonActiveSpan = _tmFromLastMsg.Elapsed;
             root.Counters = _counters;
 

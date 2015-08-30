@@ -38,7 +38,7 @@ namespace L4p.WebApi.FluentApi.HttpServerSetup
         #endregion
 
         #region IMapTo
-        IRequestSpecifier IMapRoute.MapTo(IBusinessLogicModule listener, RouteHandler handler)
+        IRequestSpecifier IMapRoute.MapTo(IBlController listener, RouteHandler handler)
         {
             _route = _server.AddRoute(_props.Route, listener, handler);
             return this;

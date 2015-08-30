@@ -1,4 +1,4 @@
-<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="744" measuredH="648" mockupW="729" mockupH="629">
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="591" measuredH="648" mockupW="576" mockupH="629">
   <controls>
     <control controlID="0" controlTypeID="com.balsamiq.mockups::Arrow" x="419" y="416" w="10" h="87" measuredW="150" measuredH="100" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
@@ -17,7 +17,7 @@
         <borderStyle>roundedSolid</borderStyle>
       </controlProperties>
     </control>
-    <control controlID="2" controlTypeID="com.balsamiq.mockups::TextArea" x="168" y="127" w="105" h="40" measuredW="200" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::TextArea" x="78" y="145" w="105" h="40" measuredW="200" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <align>center</align>
         <color>16776960</color>
@@ -25,7 +25,7 @@
         <verticalScrollbar>false</verticalScrollbar>
       </controlProperties>
     </control>
-    <control controlID="3" controlTypeID="com.balsamiq.mockups::TextArea" x="314" y="44" w="105" h="40" measuredW="200" measuredH="140" zOrder="3" locked="false" isInGroup="-1">
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::TextArea" x="266" y="131" w="105" h="40" measuredW="200" measuredH="140" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
         <align>center</align>
         <color>16776960</color>
@@ -64,7 +64,7 @@
         <verticalScrollbar>false</verticalScrollbar>
       </controlProperties>
     </control>
-    <control controlID="8" controlTypeID="com.balsamiq.mockups::RoundButton" x="456" y="110" w="124" h="57" measuredW="32" measuredH="32" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::RoundButton" x="462" y="137" w="124" h="57" measuredW="32" measuredH="32" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15374745</color>
         <shape>roundRect</shape>
@@ -124,7 +124,7 @@
         <verticalScrollbar>false</verticalScrollbar>
       </controlProperties>
     </control>
-    <control controlID="22" controlTypeID="com.balsamiq.mockups::Arrow" x="419" y="148" w="25" h="103" measuredW="150" measuredH="100" zOrder="16" locked="false" isInGroup="-1">
+    <control controlID="22" controlTypeID="com.balsamiq.mockups::Arrow" x="419" y="171" w="37" h="80" measuredW="150" measuredH="100" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <color>13369344</color>
         <curvature>0</curvature>
@@ -146,7 +146,7 @@
         <text/>
       </controlProperties>
     </control>
-    <control controlID="24" controlTypeID="com.balsamiq.mockups::TextArea" x="496" y="188" w="248" h="63" measuredW="200" measuredH="140" zOrder="18" locked="false" isInGroup="-1">
+    <control controlID="24" controlTypeID="com.balsamiq.mockups::TextArea" x="343" y="53" w="248" h="63" measuredW="200" measuredH="140" zOrder="18" locked="false" isInGroup="-1">
       <controlProperties>
         <backgroundAlpha>1</backgroundAlpha>
         <borderColor>13369344</borderColor>
@@ -162,7 +162,7 @@
         <text>If%20reference%20counter%20is%20zero%0ADeadSince%20field%20is%20updated</text>
       </controlProperties>
     </control>
-    <control controlID="26" controlTypeID="com.balsamiq.mockups::Arrow" x="398" y="95" w="46" h="46" measuredW="150" measuredH="100" zOrder="20" locked="false" isInGroup="-1">
+    <control controlID="26" controlTypeID="com.balsamiq.mockups::Arrow" x="380" y="145" w="76" h="26" measuredW="150" measuredH="100" zOrder="20" locked="false" isInGroup="-1">
       <controlProperties>
         <color>13369344</color>
         <curvature>0</curvature>
