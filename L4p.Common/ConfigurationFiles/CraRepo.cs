@@ -19,7 +19,7 @@ namespace L4p.Common.ConfigurationFiles
     {
         #region members
 
-        private readonly Dictionary<string, CraSection> _sections;
+//        private readonly Dictionary<string, CraSection> _sections;
 
         #endregion
 

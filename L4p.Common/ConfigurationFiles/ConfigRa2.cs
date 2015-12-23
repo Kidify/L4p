@@ -40,6 +40,7 @@ namespace L4p.Common.ConfigurationFiles
             var classType = typeof(TConfig);
             var cram = CraManager.Instance;
 
+            _onChangeLatency = TimeSpan.MinValue;
             _cram = cram;
             _configKey = configKey;
             _classType = classType;

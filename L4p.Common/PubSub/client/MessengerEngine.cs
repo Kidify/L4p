@@ -182,7 +182,7 @@ namespace L4p.Common.PubSub.client
                 action();
                 Interlocked.Increment(ref _counters.HubMsgSent);
             }
-            catch (EndpointNotFoundException ex)
+            catch (EndpointNotFoundException)
             {
                 Interlocked.Increment(ref _counters.EndpointNotFound);
                 Interlocked.Increment(ref _counters.HubMsgFailed);
