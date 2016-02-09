@@ -102,6 +102,7 @@
     <Compile Include="ExcelFiles\SheetReader.cs" />
     <Compile Include="ExcelFiles\SingleSheet.cs" />
     <Compile Include="ExcelFiles\_nunit\SubstitutionTests.cs" />
+    <Compile Include="Extensions\UnitsExtensions.cs" />
     <Compile Include="FunnelsModel\NotInitializedFunnels.cs" />
     <Compile Include="InsightCounters\MyCountersManager.cs" />
     <Compile Include="Loggers\StdLog.cs" />
