@@ -32,7 +32,7 @@ namespace L4p.Common.Loggers
         #region members
 
         private const string LOG_FOLDER = "log_folder";
-        public static string DEFAULT_LOG_FOLDER = @"d:\logs";
+        public static string DEFAULT_LOG_FOLDER = @"c:\logs";
 
         private readonly string _name;
         private readonly string _path;
