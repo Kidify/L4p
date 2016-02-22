@@ -21,6 +21,17 @@ namespace L4p.Common.Extensions
                 !array.IsEmpty();
         }
 
+        public static bool IsEmpty<T>(this List<T> list)
+        {
+            if (list == null)
+                return true;
+
+            if (list.Count == 0)
+                return true;
+
+            return false;
+        }
+
         public static bool IsEmpty<T>(this Queue<T> array)
         {
             if (array == null)

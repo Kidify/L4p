@@ -68,15 +68,16 @@ namespace L4p.Common.Wcf
 
         #region private
 
-        private bool start_host()
+        private bool start_host(int no)
         {
             try
             {
                 _impl.StartAt(_uri);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                _log.Trace("An attempt ({0}) to start a host failed; {1}", no, ex.Message);
                 return false;
             }
         }
@@ -90,7 +91,7 @@ namespace L4p.Common.Wcf
                 if (token.IsCancellationRequested)
                     break;
 
-                if (start_host())
+                if (start_host(count))
                     break;
 
                 if (count++ > _config.MaxRetries)

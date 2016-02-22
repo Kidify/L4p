@@ -85,6 +85,7 @@ namespace L4p.Common.Wcf
             }
             catch (Exception ex)
             {
+                host.Abort();
                 _log.Warn("Failed to stop service '{0} at '{1}'; {2}", _serviceName, uri, ex.Message);
             }
         }

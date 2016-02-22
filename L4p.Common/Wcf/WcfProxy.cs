@@ -21,7 +21,9 @@ namespace L4p.Common.Wcf
                 Close();
             }
             catch
-            {}
+            {
+                Abort();
+            }
         }
 
         #endregion
