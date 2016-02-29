@@ -1,5 +1,6 @@
 using System;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using L4p.Common.Loggers;
 
 namespace L4p.Common.Wcf
@@ -30,8 +31,8 @@ namespace L4p.Common.Wcf
 
         #region contstruction
 
-        protected WcfProxy(string uri)
-            : base(WcfTcp.NewTcpBinding(), new EndpointAddress(uri))
+        protected WcfProxy(string uri, Binding binding = null)
+            : base(binding ?? WcfTcp.NewTcpBinding(), new EndpointAddress(uri))
         {
         }
 

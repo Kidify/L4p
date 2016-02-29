@@ -1,4 +1,5 @@
 using System;
+using System.ServiceModel.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 using L4p.Common.Extensions;
@@ -34,6 +35,7 @@ namespace L4p.Common.Wcf
         private readonly CancellationTokenSource _cancellation;
 
         private string _uri;
+        private Binding _binding;
 
         #endregion
 
@@ -72,7 +74,7 @@ namespace L4p.Common.Wcf
         {
             try
             {
-                _impl.StartAt(_uri);
+                _impl.StartAt(_uri, _binding);
                 return true;
             }
             catch (Exception ex)
@@ -116,9 +118,10 @@ namespace L4p.Common.Wcf
             _impl.Dispose();
         }
 
-        void IWcfHost.StartAt(string uri)
+        void IWcfHost.StartAt(string uri, Binding binding)
         {
             _uri = uri;
+            _binding = binding;
             _task.Start();
         }
 

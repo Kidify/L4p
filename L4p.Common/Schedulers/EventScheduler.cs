@@ -26,6 +26,7 @@ namespace L4p.Common.Schedulers
     {
         #region members
 
+        private readonly ILogFile _log;
         private readonly ISchedulerRepo _repo;
         private readonly IForeverThread _thr;
         private readonly AutoResetEvent _hasNewTriger;
@@ -42,6 +43,7 @@ namespace L4p.Common.Schedulers
 
         private EventScheduler(ILogFile log)
         {
+            _log = log;
             _repo = SchedulerRepo.NewSync();
             _thr = ForeverThread.New(thread_loop, log);
             _hasNewTriger = new AutoResetEvent(false);
@@ -72,7 +74,7 @@ namespace L4p.Common.Schedulers
             {
                 info.Failed++;
                 info.LastFailure = ex;
-                TraceLogger.WriteLine(ex);
+                _log.Error(ex);
             }
 
             info.Count--;

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using L4p.Common.Extensions;
 using L4p.Common.Loggers;
 
@@ -8,7 +9,7 @@ namespace L4p.Common.Wcf
 {
     public interface IWcfHost : IDisposable
     {
-        void StartAt(string uri);
+        void StartAt(string uri, Binding binding = null);
         void Close();
     }
 
@@ -98,16 +99,13 @@ namespace L4p.Common.Wcf
             close_wcf_host(host);
         }
 
-        private ServiceHost open_wcf_peer(T target, string uri)
+        private ServiceHost open_wcf_peer(T target, string uri, Binding binding)
         {
             _log.Trace("starting service '{0}' at '{1}'", _serviceName, uri);
 
             var host = new ServiceHost(target);
 
-            host.AddServiceEndpoint(
-                implementedContract: typeof(T),
-                binding: WcfTcp.NewTcpBinding(),
-                address: uri);
+            host.AddServiceEndpoint(typeof(T), binding, uri);
 
             try
             {
@@ -133,7 +131,7 @@ namespace L4p.Common.Wcf
             close_wcf_peer();
         }
 
-        void IWcfHost.StartAt(string uri)
+        void IWcfHost.StartAt(string uri, Binding binding)
         {
             if (_target == null)
                 throw new L4pException("Target has not been set for '{0}'", uri);
@@ -143,7 +141,10 @@ namespace L4p.Common.Wcf
 
             NetTcpSharing.Instance.Enable();
 
-            _host = open_wcf_peer(_target, uri);
+            if (binding == null)
+                binding = WcfTcp.NewTcpBinding();
+
+            _host = open_wcf_peer(_target, uri, binding);
         }
 
         void IWcfHost.Close()

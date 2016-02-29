@@ -13,6 +13,7 @@ namespace L4p.Common.ForeverThreads
         bool StopRequestIsPosted();
         bool IsStopped();
         bool ItsMyThread();
+        void Idle();
     }
 
     public class ForeverThread : IForeverThread
@@ -136,6 +137,14 @@ namespace L4p.Common.ForeverThreads
         {
             return
                 _thr == Thread.CurrentThread;
+        }
+
+        void IForeverThread.Idle()
+        {
+            if (_thr != Thread.CurrentThread)
+                return;
+
+            Thread.Sleep(1);
         }
 
         #endregion
