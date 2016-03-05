@@ -89,6 +89,12 @@ namespace L4p.Common.Loggers
 
         private void dispatch(Action writeToLog, string msg, params object[] args)
         {
+            if (_ttl == TimeSpan.Zero)
+            {
+                writeToLog();
+                return;
+            }
+
             var now = DateTime.UtcNow;
             var fmsg = msg.Fmt(args);
 
