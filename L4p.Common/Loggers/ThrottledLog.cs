@@ -233,4 +233,24 @@ namespace L4p.Common.Loggers
             set { _impl.TraceOn = value; }
         }
     }
+
+    public static class ThrottleLogFileWrapper
+    {
+        public static TimeSpan DefaultThrottleSpan = 20.Seconds();
+
+        public static ILogFile Throttle(this ILogFile log, TimeSpan trottleSpan)
+        {
+            if (log is ThrottledLog)
+                return log;
+
+            return
+                ThrottledLog.New(DefaultThrottleSpan, log);
+        }
+
+        public static ILogFile Throttle(this ILogFile log)
+        {
+            return
+                log.Throttle(DefaultThrottleSpan);
+        }
+    }
 }
