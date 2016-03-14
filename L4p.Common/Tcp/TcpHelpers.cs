@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using L4p.Common.Extensions;
 using L4p.Common.Helpers;
 
@@ -22,6 +25,20 @@ namespace L4p.Common.Tcp
             {
                 port = 0;
             }
+        }
+
+        public static string GetMyIp()
+        {
+            var host = Dns.GetHostEntry(Environment.MachineName);
+
+            var query =
+                from ip in host.AddressList
+                where ip.AddressFamily == AddressFamily.InterNetwork
+                select ip.ToString();
+
+            var myIp = query.FirstOrDefault();
+
+            return myIp;
         }
     }
 }
