@@ -68,6 +68,7 @@
     <Compile Include="HandleAllRequests.cs" />
     <Compile Include="HttpHelpers.cs" />
     <Compile Include="IHttpServer.cs" />
+    <Compile Include="_nunit\HttpListenerWrangling.cs" />
     <Compile Include="_nunit\HttpArgumentsTests.cs" />
     <Compile Include="_nunit\HttpHelpersTests.cs" />
     <Compile Include="_nunit\RouteRepositoryTests.cs" />
