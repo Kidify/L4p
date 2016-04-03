@@ -49,9 +49,11 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -102,6 +104,7 @@
     <Compile Include="ExcelFiles\SheetReader.cs" />
     <Compile Include="ExcelFiles\SingleSheet.cs" />
     <Compile Include="ExcelFiles\_nunit\SubstitutionTests.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\UnitsExtensions.cs" />
     <Compile Include="FunnelsModel\NotInitializedFunnels.cs" />
     <Compile Include="InsightCounters\MyCountersManager.cs" />
