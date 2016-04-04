@@ -244,7 +244,7 @@ namespace L4p.Common.Loggers
                 return log;
 
             return
-                ThrottledLog.New(DefaultThrottleSpan, log);
+                ThrottledLog.New(trottleSpan, log);
         }
 
         public static ILogFile Throttle(this ILogFile log)
