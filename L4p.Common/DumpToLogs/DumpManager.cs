@@ -8,6 +8,7 @@ using L4p.Common.Helpers;
 using L4p.Common.Json;
 using L4p.Common.Loggers;
 using L4p.Common.PubSub;
+using L4p.Common.PubSub.client;
 using L4p.Common.Schedulers;
 using L4p.Common.Wipers;
 
@@ -93,7 +94,12 @@ namespace L4p.Common.DumpToLogs
         private static void make_subscriptions(IDumpManager self)
         {
             Register<DumpComponent>(self.Dump);
-            Signals.SubscribeTo<DumpToLogMsg>(self.DumpComponent);
+
+            var signals = Signals.Instance;
+            var globalSignalsAreInitialized = !(signals is NotInitializedSignals);
+
+            if (globalSignalsAreInitialized)
+                signals.SubscribeTo<DumpToLogMsg>(self.DumpComponent);
         }
 
         private string get_class_name(DumpFunc dumpFunc)
