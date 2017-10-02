@@ -13,7 +13,7 @@ namespace L4p.Common.Schedulers
         void Stop();
 
         IEventSlot FireOnce(TimeSpan delay, Action action);
-        IEventSlot Repeat(TimeSpan period, Action action);
+        IEventSlot Repeat(TimeSpan? periodOrNull, Action action);
         IEventSlot Schedule(EventInfo info, Action action);
         IEventSlot Idle(Action action);
 
@@ -152,20 +152,24 @@ namespace L4p.Common.Schedulers
             return slot;
         }
 
-        IEventSlot IEventScheduler.Repeat(TimeSpan period, Action action)
+        IEventSlot IEventScheduler.Repeat(TimeSpan? periodOrNull, Action action)
         {
+            if (periodOrNull == null)
+                return EventSlot.Null;
+
+            var period = periodOrNull.Value;
+
             Validate.NotNull(action);
             Validate.That(period > TimeSpan.Zero, "Repeat with zero interval is not allowed");
 
             var now = DateTime.UtcNow;
 
-            var info = new EventInfo
-                {
-                    NextShot = now + period,
-                    RepeatAfter = period,
-                    Count = int.MaxValue,
-                    Action = action
-                };
+            var info = new EventInfo {
+                NextShot = now + period,
+                RepeatAfter = period,
+                Count = int.MaxValue,
+                Action = action
+            };
 
             var slot = register_event(info);
 

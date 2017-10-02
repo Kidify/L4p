@@ -51,6 +51,18 @@ namespace L4p.Common.Schedulers
         }
 
         #endregion
-    }
 
+        #region null
+
+        private class NullSlot : IEventSlot
+        {
+            void IEventSlot.Cancel() { }
+            void IEventSlot.Pause() { }
+            void IEventSlot.Resume() { }
+        }
+
+        public static readonly IEventSlot Null = new NullSlot();
+
+        #endregion
+    }
 }

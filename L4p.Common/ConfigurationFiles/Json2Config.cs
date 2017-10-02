@@ -35,6 +35,7 @@ namespace L4p.Common.ConfigurationFiles
         #region members
 
         private readonly string _path;
+        private readonly string _hostname;
 
         #endregion
 
@@ -49,6 +50,7 @@ namespace L4p.Common.ConfigurationFiles
         private Json2Config(string path)
         {
             _path = path;
+            _hostname = Environment.MachineName;
         }
 
         #endregion
@@ -136,7 +138,7 @@ namespace L4p.Common.ConfigurationFiles
             return mconfig;
         }
 
-        private static bool has_key_in_path(SingleConfiguration sconfig, string path, out string matchedKey)
+        private bool has_key_in_path(SingleConfiguration sconfig, string path, out string matchedKey)
         {
             matchedKey = null;
 
@@ -144,6 +146,9 @@ namespace L4p.Common.ConfigurationFiles
             {
                 bool containsKey =
                     path.IndexOf(key, StringComparison.InvariantCultureIgnoreCase) != -1;
+
+                containsKey |=
+                    0 == String.Compare(key, _hostname, StringComparison.InvariantCultureIgnoreCase);
 
                 if (containsKey == false)
                     continue;
