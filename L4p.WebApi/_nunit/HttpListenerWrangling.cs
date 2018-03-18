@@ -67,7 +67,7 @@ namespace L4p.WebApi._nunit
                 response.Close();
             }
 
-            listener.Stop();
+//            listener.Stop();
         }
     }
 }
